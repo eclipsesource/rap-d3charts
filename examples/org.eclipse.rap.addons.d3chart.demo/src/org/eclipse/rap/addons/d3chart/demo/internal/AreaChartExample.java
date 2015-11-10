@@ -10,11 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo.internal;
 
-import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+import static org.eclipse.rap.addons.d3chart.demo.internal.data.Colors.toCss;
 
-import org.eclipse.rap.addons.d3chart.ColorStream;
-import org.eclipse.rap.addons.d3chart.Colors;
 import org.eclipse.rap.addons.d3chart.StreamChart;
+import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.DataSet;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.ExampleData;
 import org.eclipse.rap.examples.ExampleUtil;
@@ -33,14 +32,14 @@ public class AreaChartExample implements IExamplePage {
 
   private DataSet dataSet;
   private StreamChart chart;
-  private ColorStream colors;
+  private Colors colors;
   private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     dataSet = ExampleData.BROWSER_QUARTERLY_EUROPE;
-    colors = Colors.cat10Colors( parent.getDisplay() ).loop();
+    colors = Colors.cat10Colors();
     createChartPart( parent );
     createControlPart( parent );
   }
@@ -69,7 +68,7 @@ public class AreaChartExample implements IExamplePage {
 
   private void createItems() {
     for( String browser : dataSet.getColumns() ) {
-      items.add( new JsonObject().set( "text", browser ).set( "color", toJson( colors.next() ) ) );
+      items.add( new JsonObject().set( "text", browser ).set( "color", toCss( colors.next() ) ) );
     }
   }
 

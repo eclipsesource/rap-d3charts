@@ -10,14 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo.internal;
 
-import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+import static org.eclipse.rap.addons.d3chart.demo.internal.data.Colors.toCss;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
-import org.eclipse.rap.addons.d3chart.ColorStream;
-import org.eclipse.rap.addons.d3chart.Colors;
 import org.eclipse.rap.addons.d3chart.PieChart;
+import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.DataSet;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.ExampleData;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.DataSet.DataItem;
@@ -28,6 +27,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class PieChartExample implements IExamplePage {
 
-  private ColorStream colors;
+  private Colors colors;
   private DataSet dataSet;
   private PieChart pieChart;
   private int cursor;
@@ -53,7 +53,7 @@ public class PieChartExample implements IExamplePage {
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     dataSet = ExampleData.BROWSER_YEARLY;
-    colors = Colors.cat10Colors( parent.getDisplay() ).loop();
+    colors = Colors.cat10Colors();
     createChartPart( parent );
     createControlPart( parent );
     createItems();
@@ -148,11 +148,11 @@ public class PieChartExample implements IExamplePage {
   private void createItems() {
     List<String> columns = dataSet.getColumns();
     for( String column : columns ) {
-      Color color = colors.next();
-      items.add( new JsonObject().add( "value", 0 ).add( "color", toJson( color ) ) );
+      RGB color = colors.next();
+      items.add( new JsonObject().add( "value", 0 ).add( "color", toCss( color ) ) );
       TableItem tableItem = new TableItem( table, SWT.NONE );
       tableItem.setText( 1, column );
-      tableItem.setBackground( 0, color );
+      tableItem.setBackground( 0, new Color( table.getDisplay(), color ) );
     }
   }
 

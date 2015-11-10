@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,14 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.addons.d3chart;
+package org.eclipse.rap.addons.d3chart.demo.internal.data;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Device;
+import java.util.Arrays;
+
 import org.eclipse.swt.graphics.RGB;
 
 
-public abstract class Colors {
+public class Colors {
 
   private static final RGB[] CAT10_COLORS = {
     new RGB( 0x1f, 0x77, 0xb4 ),
@@ -29,7 +29,6 @@ public abstract class Colors {
     new RGB( 0xbc, 0xbd, 0x22 ),
     new RGB( 0x17, 0xbe, 0xcf )
   };
-
   private static final RGB[] CAT20_COLORS = {
     new RGB( 0x1f, 0x77, 0xb4 ),
     new RGB( 0xae, 0xc7, 0xe8 ),
@@ -53,18 +52,49 @@ public abstract class Colors {
     new RGB( 0x9e, 0xda, 0xe5 )
   };
 
-  public static ColorSequence cat10Colors( Device device ) {
-    if( device.isDisposed() ) {
-      SWT.error( SWT.ERROR_DEVICE_DISPOSED );
+  private final RGB[] colors;
+  private int cursor;
+
+  public Colors( RGB... colors ) {
+    if( colors.length == 0 ) {
+      throw new IllegalArgumentException( "Cannot create ColorSequence without any colors" );
     }
-    return new ColorSequence( device, CAT10_COLORS );
+    this.colors = Arrays.copyOf( colors, colors.length );
   }
 
-  public static ColorSequence cat20Colors( Device device ) {
-    if( device.isDisposed() ) {
-      SWT.error( SWT.ERROR_DEVICE_DISPOSED );
-    }
-    return new ColorSequence( device, CAT20_COLORS );
+  public RGB get( int index ) {
+    RGB color = colors[index];
+    return new RGB( color.red, color.green, color.blue );
+  }
+
+  public RGB next() {
+    return colors[cursor++];
+  }
+
+  public int size() {
+    return colors.length;
+  }
+
+  public static Colors cat10Colors() {
+    return new Colors( CAT10_COLORS );
+  }
+
+  public static Colors cat20Colors() {
+    return new Colors( CAT20_COLORS );
+  }
+
+  public static String toCss( RGB color ) {
+    StringBuilder sb = new StringBuilder();
+    sb.append( "#" );
+    sb.append( getHexStr( color.red ) );
+    sb.append( getHexStr( color.green ) );
+    sb.append( getHexStr( color.blue ) );
+    return sb.toString();
+  }
+
+  private static String getHexStr( int value ) {
+    String hex = Integer.toHexString( value );
+    return hex.length() == 1 ? "0" + hex : hex;
   }
 
 }

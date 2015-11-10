@@ -80,7 +80,7 @@ d3chart.StreamChart.prototype = {
     var that = this;
     selection.append( "svg:path" )
       .attr( "d", function( d ) { return that._area( d.values ); } )
-      .style( "fill", function( d ) { return d3chart.getColor( d.item ); } )
+      .style( "fill", function( d ) { return d.item.color || "#000"; } )
       .append( "svg:title" )
         .text( function( d ) { return d.item.text || ""; } );
   },

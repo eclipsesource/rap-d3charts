@@ -67,7 +67,7 @@ d3chart.BarChart.prototype = {
       .attr( "y", function( item, index ) { return that._getOffset( index ); } )
       .attr( "width", 0 )
       .attr( "height", that._barWidth )
-      .attr( "fill", function( item ) { return d3chart.getColor( item ); } );
+      .attr( "fill", function( item ) { return item.color || "#000"; } );
   },
 
   _createTexts: function( selection ) {
@@ -94,7 +94,7 @@ d3chart.BarChart.prototype = {
       .attr( "y", function( item, index ) { return that._getOffset( index ); } )
       .attr( "width", function( item ) { return that._xScale( item.value || 0 ); } )
       .attr( "height", that._barWidth )
-      .attr( "fill", function( item ) { return d3chart.getColor( item ); } );
+      .attr( "fill", function( item ) { return item.color || "#000"; } );
   },
 
   _updateTexts: function( selection ) {

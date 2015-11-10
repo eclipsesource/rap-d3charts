@@ -10,19 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo;
 
-import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
-
 import org.eclipse.rap.addons.d3chart.BarChart;
-import org.eclipse.rap.addons.d3chart.ColorStream;
-import org.eclipse.rap.addons.d3chart.Colors;
+import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.application.AbstractEntryPoint;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 
 public class BarChartSnippet extends AbstractEntryPoint {
@@ -36,17 +31,17 @@ public class BarChartSnippet extends AbstractEntryPoint {
   }
 
   private static JsonArray createData() {
-    ColorStream colors = Colors.cat10Colors( Display.getCurrent() ).loop();
+    Colors colors = Colors.cat10Colors();
     return new JsonArray()
-      .add( createItem( "Chrome", colors.next(), 0.4f ) )
-      .add( createItem( "Firefox", colors.next(), 0.2f ) )
-      .add( createItem( "IE", colors.next(), 0.3f ) );
+      .add( createItem( "Chrome", Colors.toCss( colors.next() ), 0.4f ) )
+      .add( createItem( "Firefox", Colors.toCss( colors.next() ), 0.2f ) )
+      .add( createItem( "IE", Colors.toCss( colors.next() ), 0.3f ) );
   }
 
-  private static JsonObject createItem( String text, Color colors, float value ) {
+  private static JsonObject createItem( String text, String color, float value ) {
     return new JsonObject()
       .add( "text", text )
-      .add( "color", toJson( colors ) )
+      .add( "color", color )
       .add( "value", value );
   }
 

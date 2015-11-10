@@ -10,19 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo.internal;
 
+import static org.eclipse.rap.addons.d3chart.demo.internal.data.Colors.toCss;
+
 import java.text.DecimalFormat;
 
 import org.eclipse.rap.addons.d3chart.BarChart;
-import org.eclipse.rap.addons.d3chart.ColorStream;
-import org.eclipse.rap.addons.d3chart.Colors;
 import org.eclipse.rap.addons.d3chart.PieChart;
+import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -32,14 +31,14 @@ import org.eclipse.swt.widgets.Listener;
 
 public class BarChartExample implements IExamplePage {
 
-  private ColorStream colors;
+  private Colors colors;
   private BarChart barChart;
   private PieChart pieChart;
   private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
-    colors = Colors.cat10Colors( parent.getDisplay() ).loop();
+    colors = Colors.cat10Colors();
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     createChartPart( parent );
     createControlPart( parent );
@@ -63,8 +62,7 @@ public class BarChartExample implements IExamplePage {
       @Override
       public void handleEvent( Event event ) {
         float value = ( float )( Math.random() * 0.8 );
-        Color color = colors.next();
-        addItem( value, color );
+        addItem( value, toCss( colors.next() ) );
         pieChart.setChartData( items );
         barChart.setChartData( items );
       }
@@ -123,12 +121,12 @@ public class BarChartExample implements IExamplePage {
     return button;
   }
 
-  private void addItem( float value, Color color ) {
+  private void addItem( float value, String color ) {
     DecimalFormat format = new DecimalFormat( "#.#" );
     items.add( new JsonObject()
       .add( "value", value )
       .add( "text", format.format( value * 100 ) + "%" )
-      .add( "color", JsonMapping.toJson( color ) ) );
+      .add( "color", color ) );
   }
 
   private void removeItem() {

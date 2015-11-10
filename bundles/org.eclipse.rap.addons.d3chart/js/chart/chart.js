@@ -11,13 +11,6 @@
 
 d3chart = {};
 
-d3chart.getColor = function( item ) {
-  if ( Array.isArray( item.color ) ) {
-    return "rgba(" + item.color.join( "," ) + ")";
-  }
-  return "#000";
-};
-
 d3chart.Chart = function( parent, renderer ) {
   this._renderer = renderer;
   this._element = this.createElement( parent );

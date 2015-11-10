@@ -95,7 +95,7 @@ d3chart.PieChart.prototype = {
   _createPaths: function( selection ) {
     var that = this;
     selection.append( "svg:path" )
-      .attr( "fill", function( item ) { return d3chart.getColor( item.data ); } )
+      .attr( "fill", function( item ) { return item.data.color || "#000"; } )
       .attr( "d", that._arc )
       .each( function( datum ) {
         this._buffer = { startAngle: datum.startAngle, endAngle: datum.endAngle };
@@ -125,7 +125,7 @@ d3chart.PieChart.prototype = {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "fill", function( item ) { return d3chart.getColor( item.data ); } )
+      .attr( "fill", function( item ) { return item.data.color || "#000"; } )
       .attrTween( "d", function( datum ) {
         var previous = this._buffer;
         var interpolate = d3.interpolate( previous, datum );
