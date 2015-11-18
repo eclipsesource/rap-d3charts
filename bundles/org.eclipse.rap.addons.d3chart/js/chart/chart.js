@@ -11,30 +11,46 @@
 
 d3chart = {};
 
-d3chart.Chart = function( parent, renderer ) {
-  this._renderer = renderer;
+d3chart.Chart = function( parent, config ) {
+  this._data = [];
+  this._config = config;
   this._element = this.createElement( parent );
   this._padding = 20;
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   this._needsLayout = true;
-  var that = this;
   rap.on( "render", function() {
-    if( that._needsRender ) {
-      if( that._needsLayout ) {
-        that._renderer.initialize( that );
-        that._needsLayout = false;
+    if( this._needsRender ) {
+      if( this._needsLayout ) {
+        this.layout();
+        this._needsLayout = false;
       }
-      that._renderer.render( that );
-      that._needsRender = false;
+      this.render();
+      this._needsRender = false;
     }
-  } );
+  }.bind( this ) );
   parent.addListener( "Resize", function() {
-    that._resize( parent.getClientArea() );
-  } );
+    this._resize( parent.getClientArea() );
+  }.bind( this) );
   this._resize( parent.getClientArea() );
 };
 
 d3chart.Chart.prototype = {
+
+  render: function() {
+  },
+
+  layout: function() {
+  },
+
+  setConfig: function( config ) {
+    this._config = config;
+    this._scheduleUpdate( true );
+  },
+
+  setItems: function( data ) {
+    this._data = data;
+    this._scheduleUpdate();
+  },
 
   createElement: function( parent ) {
     var element = document.createElement( "div" );
@@ -77,4 +93,14 @@ d3chart.Chart.prototype = {
     }
   }
 
+};
+
+d3chart.extend = function( target ) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+    for (var name in source) {
+      target[name] = source[name];
+    }
+  }
+  return target;
 };

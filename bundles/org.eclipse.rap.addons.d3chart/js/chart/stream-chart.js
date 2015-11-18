@@ -10,30 +10,20 @@
  ******************************************************************************/
 
 d3chart.StreamChart = function( parent ) {
+  d3chart.Chart.call( this, parent, {});
   this._stack = d3.layout.stack()
     .offset( "wiggle" )
     .values( function( d ) { return d.values; } );
-  this._items = [];
-  this._chart = new d3chart.Chart( parent, this );
 };
 
-d3chart.StreamChart.prototype = {
+d3chart.StreamChart.prototype = d3chart.extend({}, d3chart.Chart.prototype, {
 
-  setItems: function( items ) {
-    this._items = items;
-    this._chart._scheduleUpdate();
-  },
+  layout: function() {
+    this._layer = this.getLayer( "layer" );
 
-  destroy: function() {
-    this._chart.destroy();
-  },
-
-  initialize: function( chart ) {
-    this._layer = chart.getLayer( "layer" );
-
-    var padding = chart._padding;
-    var width = chart._width - chart._padding * 2;
-    var height = chart._height - chart._padding * 2;
+    var padding = this._padding;
+    var width = this._width - this._padding * 2;
+    var height = this._height - this._padding * 2;
 
     this._xScale = d3.scale.linear()
       .domain( [ 0, 17 ] )
@@ -50,7 +40,7 @@ d3chart.StreamChart.prototype = {
 
   render: function() {
 
-    var data = this._items.map( function( item ) {
+    var data = this._data.map( function( item ) {
       return {
         item: item,
         values: (item.values || []).map( function( value, index ) {
@@ -115,7 +105,7 @@ d3chart.StreamChart.prototype = {
     remoteObject.notify( "Selection", { "index": index } );
   }
 
-};
+});
 
 // TYPE HANDLER
 
@@ -128,7 +118,7 @@ rap.registerTypeHandler( "d3chart.StreamChart", {
 
   destructor: "destroy",
 
-  properties: [ "items" ],
+  properties: [ "config", "items" ],
 
   events: [ "Selection" ]
 

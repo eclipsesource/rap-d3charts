@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -34,7 +35,7 @@ public class PieChart extends Chart {
     checkWidget();
     if( angle != startAngle ) {
       startAngle = angle;
-      remoteObject.set( "startAngle", angle * Math.PI * 2 );
+      updateConfig();
     }
   }
 
@@ -47,7 +48,7 @@ public class PieChart extends Chart {
     checkWidget();
     if( angle != endAngle ) {
       endAngle = angle;
-      remoteObject.set( "endAngle", angle * Math.PI * 2 );
+      updateConfig();
     }
   }
 
@@ -60,8 +61,18 @@ public class PieChart extends Chart {
     checkWidget();
     if( radius != innerRadius ) {
       innerRadius = radius;
-      remoteObject.set( "innerRadius", radius );
+      updateConfig();
     }
+  }
+
+  private void updateConfig() {
+    checkWidget();
+    JsonObject config = new JsonObject()
+      .add( "startAngle", startAngle * Math.PI * 2 )
+      .add( "endAngle", endAngle * Math.PI * 2 )
+      .add( "innerRadius", innerRadius )
+      .add( "outerRadius", 1 );
+    remoteObject.set( "config", config );
   }
 
 }

@@ -10,71 +10,37 @@
  ******************************************************************************/
 
 d3chart.PieChart = function( parent ) {
-  this._startAngle = 0;
-  this._endAngle = 2 * Math.PI;
-  this._outerRadius = 1;
-  this._innerRadius = 0;
+  d3chart.Chart.call( this, parent, {
+    startAngle: 0,
+    endAngle: 2 * Math.PI,
+    outerRadius: 1,
+    innerRadius: 0
+  });
   this._arc = d3.svg.arc();
   this._layout = d3.layout.pie().sort( null )
     .value( function( item ) { return item.value || 0; } )
-    .startAngle( this._startAngle )
-    .endAngle( this._endAngle );
-  this._items = [];
-  this._chart = new d3chart.Chart( parent, this );
+    .startAngle( this._config.startAngle )
+    .endAngle( this._config.endAngle );
 };
 
-d3chart.PieChart.prototype = {
+d3chart.PieChart.prototype = d3chart.extend({}, d3chart.Chart.prototype, {
 
-  setItems: function( items ) {
-    this._items = items;
-    this._chart._scheduleUpdate();
-  },
-
-  destroy: function() {
-    this._chart.destroy();
-  },
-
-  initialize: function() {
-    this._updateLayout();
-  },
-
-  setStartAngle: function( angle ) {
-    this._startAngle = angle;
-    this._layout.startAngle( this._startAngle );
-    if( this._chart ) {
-      this._chart._scheduleUpdate();
-    }
-  },
-
-  setEndAngle: function( angle ) {
-    this._endAngle = angle;
-    this._layout.endAngle( this._endAngle );
-    if( this._chart ) {
-      this._chart._scheduleUpdate();
-    }
-  },
-
-  setInnerRadius: function( radius ) {
-    this._innerRadius = radius;
-    if( this._chart ) {
-      this._chart._scheduleUpdate( true );
-    }
-  },
-
-  _updateLayout: function() {
-    var centerX = this._chart._width / 2;
-    var centerY = this._chart._height / 2;
-    var maxRadius = Math.min( centerX, centerY ) - this._chart._padding;
+  layout: function() {
+    var centerX = this._width / 2;
+    var centerY = this._height / 2;
+    var maxRadius = Math.min( centerX, centerY ) - this._padding;
+    this._layout.startAngle( this._config.startAngle );
+    this._layout.endAngle( this._config.endAngle );
     this._arc
-      .outerRadius( this._outerRadius * ( maxRadius ) )
-      .innerRadius( this._innerRadius * ( maxRadius ) );
-    this._layer = this._chart.getLayer( "layer" );
+      .outerRadius( this._config.outerRadius * maxRadius )
+      .innerRadius( this._config.innerRadius * maxRadius );
+    this._layer = this.getLayer( "layer" );
     this._layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
   },
 
   render: function() {
     var selection = this._layer.selectAll( "g.segment" )
-      .data( this._layout( this._items ) );
+      .data( this._layout( this._data ) );
     this._show( selection );
     this._updateSegments( selection );
     this._createSegments( selection.enter() );
@@ -170,7 +136,7 @@ d3chart.PieChart.prototype = {
     selection.transition().duration( 1000 ).attr( "opacity", 1.0 );
   }
 
-};
+});
 
 // TYPE HANDLER
 
@@ -183,7 +149,7 @@ rap.registerTypeHandler( "d3chart.PieChart", {
 
   destructor: "destroy",
 
-  properties: [ "startAngle", "endAngle", "innerRadius", "items" ],
+  properties: [ "config", "items" ],
 
   events: [ "Selection" ]
 

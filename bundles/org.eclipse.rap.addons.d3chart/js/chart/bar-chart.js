@@ -10,41 +10,21 @@
  ******************************************************************************/
 
 d3chart.BarChart = function( parent ) {
-  this._barWidth = 25;
-  this._spacing = 2;
-  this._items = [];
-  this._chart = new d3chart.Chart( parent, this );
+  d3chart.Chart.call( this, parent, {
+    barWidth: 25,
+    spacing: 2
+  });
 };
 
-d3chart.BarChart.prototype = {
+d3chart.BarChart.prototype = d3chart.extend({}, d3chart.Chart.prototype, {
 
-  setItems: function( items ) {
-    this._items = items;
-    this._chart._scheduleUpdate();
+  layout: function() {
+    this._layer = this.getLayer( "layer" );
   },
 
-  destroy: function() {
-    this._chart.destroy();
-  },
-
-  initialize: function( chart ) {
-    this._chart = chart;
-    this._layer = chart.getLayer( "layer" );
-  },
-
-  setBarWidth: function( barWidth ) {
-    this._barWidth = barWidth;
-    this._chart._scheduleUpdate();
-  },
-
-  setSpacing: function( spacing ) {
-    this._spacing = spacing;
-    this._chart._scheduleUpdate();
-  },
-
-  render: function( chart ) {
-    this._xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, chart._width - chart._padding * 2 ] );
-    var selection = this._layer.selectAll( "g.item" ).data( this._items );
+  render: function() {
+    this._xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, this._width - this._padding * 2 ] );
+    var selection = this._layer.selectAll( "g.item" ).data( this._data );
     this._createElements( selection.enter() );
     this._updateElements( selection );
     this._removeElements( selection.exit() );
@@ -63,18 +43,18 @@ d3chart.BarChart.prototype = {
   _createBars: function( selection ) {
     var that = this;
     selection.append( "svg:rect" )
-      .attr( "x", that._chart._padding )
+      .attr( "x", that._padding )
       .attr( "y", function( item, index ) { return that._getOffset( index ); } )
       .attr( "width", 0 )
-      .attr( "height", that._barWidth )
+      .attr( "height", that._config.barWidth )
       .attr( "fill", function( item ) { return item.color || "#000"; } );
   },
 
   _createTexts: function( selection ) {
     var that = this;
     selection.append( "svg:text" )
-      .attr( "x", that._chart._padding )
-      .attr( "y", function( item, index ) { return that._getOffset( index ) + that._barWidth / 2; } )
+      .attr( "x", that._padding )
+      .attr( "y", function( item, index ) { return that._getOffset( index ) + that._config.barWidth / 2; } )
       .attr( "text-anchor", "left" )
       .attr( "dy", ".35em" )
       .style( "font-family", "sans-serif" )
@@ -93,7 +73,7 @@ d3chart.BarChart.prototype = {
       .duration( 1000 )
       .attr( "y", function( item, index ) { return that._getOffset( index ); } )
       .attr( "width", function( item ) { return that._xScale( item.value || 0 ); } )
-      .attr( "height", that._barWidth )
+      .attr( "height", that._config.barWidth )
       .attr( "fill", function( item ) { return item.color || "#000"; } );
   },
 
@@ -102,8 +82,8 @@ d3chart.BarChart.prototype = {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "x", function( item ) { return that._chart._padding + 6 + that._xScale( item.value || 0 ); } )
-      .attr( "y", function( item, index ) { return that._getOffset( index ) + that._barWidth / 2; } )
+      .attr( "x", function( item ) { return that._padding + 6 + that._xScale( item.value || 0 ); } )
+      .attr( "y", function( item, index ) { return that._getOffset( index ) + that._config.barWidth / 2; } )
       .text( function( item ) { return item.text || ""; } );
   },
 
@@ -121,10 +101,10 @@ d3chart.BarChart.prototype = {
   },
 
   _getOffset: function( index ) {
-    return this._chart._padding + index * ( this._barWidth + this._spacing );
+    return this._padding + index * ( this._config.barWidth + this._config.spacing );
   }
 
-};
+});
 
 // TYPE HANDLER
 
@@ -137,7 +117,7 @@ rap.registerTypeHandler( "d3chart.BarChart", {
 
   destructor: "destroy",
 
-  properties: [ "barWidth", "spacing", "items" ],
+  properties: [ "config", "items" ],
 
   events: [ "Selection" ]
 
