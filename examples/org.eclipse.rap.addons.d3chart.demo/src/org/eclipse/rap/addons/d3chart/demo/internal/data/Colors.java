@@ -68,7 +68,7 @@ public class Colors {
   }
 
   public RGB next() {
-    return colors[cursor++];
+    return colors[cursor++ % colors.length];
   }
 
   public int size() {
