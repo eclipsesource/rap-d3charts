@@ -13,19 +13,15 @@ d3chart.barChart = function() {
 
   var xScale = d3.scale.linear().domain( [ 0, 1 ] );
 
-  return {
+  function render( chart, data ) {
+    xScale.range( [ 0, chart._width - chart._padding * 2 ] );
+    var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( data );
+    createElements( selection.enter(), chart );
+    updateElements( selection, chart );
+    removeElements( selection.exit() );
+  }
 
-    layout: function() {},
-
-    render: function( chart, data ) {
-      xScale.range( [ 0, chart._width - chart._padding * 2 ] );
-      var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( data );
-      createElements( selection.enter(), chart );
-      updateElements( selection, chart );
-      removeElements( selection.exit() );
-    }
-
-  };
+  return render;
 
   function createElements( selection, chart ) {
     var items = selection.append( "svg:g" )

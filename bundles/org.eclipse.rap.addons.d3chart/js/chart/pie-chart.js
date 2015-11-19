@@ -14,34 +14,28 @@ d3chart.pieChart = function() {
   var arc = d3.svg.arc();
   var layout = d3.layout.pie().sort( null )
     .value( function( item ) { return item.value || 0; } );
-  var layer;
 
-  return {
+  function render( chart, data ) {
+    var centerX = chart._width / 2;
+    var centerY = chart._height / 2;
+    var maxRadius = Math.min( centerX, centerY ) - chart._padding;
+    layout
+      .startAngle( chart._config.startAngle )
+      .endAngle( chart._config.endAngle );
+    arc
+      .outerRadius( chart._config.outerRadius * maxRadius )
+      .innerRadius( chart._config.innerRadius * maxRadius );
+    var layer = chart.getLayer( "layer" );
+    layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
+    var selection = layer.selectAll( "g.segment" )
+      .data( layout( data ) );
+    show( selection );
+    updateSegments( selection );
+    createSegments( selection.enter(), chart );
+    removeSegments( selection.exit() );
+  }
 
-    layout: function( chart ) {
-      var centerX = chart._width / 2;
-      var centerY = chart._height / 2;
-      var maxRadius = Math.min( centerX, centerY ) - chart._padding;
-      layout
-        .startAngle( chart._config.startAngle )
-        .endAngle( chart._config.endAngle );
-      arc
-        .outerRadius( chart._config.outerRadius * maxRadius )
-        .innerRadius( chart._config.innerRadius * maxRadius );
-      layer = chart.getLayer( "layer" );
-      layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
-    },
-
-    render: function( chart, data ) {
-      var selection = layer.selectAll( "g.segment" )
-        .data( layout( data ) );
-      show( selection );
-      updateSegments( selection );
-      createSegments( selection.enter(), chart );
-      removeSegments( selection.exit() );
-    }
-
-  };
+  return render;
 
   function createSegments( selection, chart ) {
     var newGroups = selection.append( "svg:g" )

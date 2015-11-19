@@ -16,40 +16,35 @@ d3chart.streamChart = function() {
     .values( function( d ) { return d.values; } );
   var area = d3.svg.area();
 
-  return {
+  function render( chart, data ) {
+    var padding = chart._padding;
+    var width = chart._width - padding * 2;
+    var height = chart._height - padding * 2;
+    var xScale = d3.scale.linear()
+      .domain( [ 0, 17 ] )
+      .range( [ padding, width ] );
+    var yScale = d3.scale.linear()
+      .domain( [ 0, 160 ] )
+      .range( [ height, padding ] );
+    area
+      .x( function( d ) { return xScale( d.x ); } )
+      .y0( function( d ) { return yScale( d.y0 ); } )
+      .y1( function( d ) { return yScale( d.y0 + d.y ); } );
+    var items = data.map( function( item ) {
+      return {
+        item: item,
+        values: ( item.values || []).map( function( value, index ) {
+          return { x: index, y: value };
+        } )
+      };
+    } );
+    var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( stack( items ) );
+    createElements( selection.enter(), chart );
+    updateElements( selection );
+    removeElements( selection.exit() );
+  }
 
-    layout: function( chart ) {
-      var padding = chart._padding;
-      var width = chart._width - padding * 2;
-      var height = chart._height - padding * 2;
-      var xScale = d3.scale.linear()
-        .domain( [ 0, 17 ] )
-        .range( [ padding, width ] );
-      var yScale = d3.scale.linear()
-        .domain( [ 0, 160 ] )
-        .range( [ height, padding ] );
-      area
-        .x( function( d ) { return xScale( d.x ); } )
-        .y0( function( d ) { return yScale( d.y0 ); } )
-        .y1( function( d ) { return yScale( d.y0 + d.y ); } );
-    },
-
-    render: function( chart, data ) {
-      var items = data.map( function( item ) {
-        return {
-          item: item,
-          values: ( item.values || []).map( function( value, index ) {
-            return { x: index, y: value };
-          } )
-        };
-      } );
-      var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( stack( items ) );
-      createElements( selection.enter(), chart );
-      updateElements( selection );
-      removeElements( selection.exit() );
-    }
-
-  };
+  return render;
 
   function createElements( selection, chart ) {
     var items = selection.append( "svg:g" )

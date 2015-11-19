@@ -18,14 +18,9 @@ d3chart.Chart = function( parent, renderer ) {
   this._element = this.createElement( parent );
   this._padding = 20;
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
-  this._needsLayout = true;
   rap.on( "render", function() {
     if( this._needsRender ) {
-      if( this._needsLayout ) {
-        this._renderer.layout( this );
-        this._needsLayout = false;
-      }
-      this._renderer.render( this, this._data );
+      this._renderer( this, this._data );
       this._needsRender = false;
     }
   }.bind( this ) );
@@ -79,10 +74,7 @@ d3chart.Chart.prototype = {
     this._scheduleUpdate( true );
   },
 
-  _scheduleUpdate: function( needsLayout ) {
-    if( needsLayout ) {
-      this._needsLayout = true;
-    }
+  _scheduleUpdate: function() {
     this._needsRender = true;
   },
 
