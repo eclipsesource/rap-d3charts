@@ -27,7 +27,6 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -41,23 +40,31 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class PieChartExample implements IExamplePage {
 
-  private Colors colors;
-  private DataSet dataSet;
-  private PieChart pieChart;
+  private final Colors colors = Colors.cat10Colors();
+  private final DataSet dataSet = ExampleData.BROWSER_YEARLY;
+  private final JsonArray items = createItems();
   private int cursor;
+  private PieChart pieChart;
   private Table table;
   private Label yearLabel;
-  private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
-    dataSet = ExampleData.BROWSER_YEARLY;
-    colors = Colors.cat10Colors();
     createChartPart( parent );
     createControlPart( parent );
-    createItems();
-    updateItems( dataSet.getRow( 0 ) );
+    updateItems();
+  }
+
+  private JsonArray createItems() {
+    JsonArray items = new JsonArray();
+    int count = dataSet.getColumnCount();
+    for( int index = 0; index < count; index++ ) {
+      items.add( new JsonObject()
+        .add( "value", 0 )
+        .add( "color", toCss( colors.get( index ) ) ) );
+    }
+    return items;
   }
 
   private void createChartPart( Composite parent ) {
@@ -103,7 +110,6 @@ public class PieChartExample implements IExamplePage {
         pieChart.setInnerRadius( 0f );
       }
     } ).setLayoutData( new GridData( SWT.RIGHT, SWT.CENTER, true, false ) );
-    createTable( composite );
   }
 
   private void createControlPart( Composite parent ) {
@@ -143,34 +149,35 @@ public class PieChartExample implements IExamplePage {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setText( "Market share" );
     column2.setWidth( 120 );
+    createTableItems();
   }
 
-  private void createItems() {
+  private void createTableItems() {
     List<String> columns = dataSet.getColumns();
+    int index = 0;
     for( String column : columns ) {
-      RGB color = colors.next();
-      items.add( new JsonObject().add( "value", 0 ).add( "color", toCss( color ) ) );
       TableItem tableItem = new TableItem( table, SWT.NONE );
       tableItem.setText( 1, column );
-      tableItem.setBackground( 0, new Color( table.getDisplay(), color ) );
+      tableItem.setBackground( 0, new Color( table.getDisplay(), colors.get( index++ ) ) );
     }
   }
 
   private void showPrevious() {
     if( cursor > 0 ) {
       cursor--;
-      updateItems( dataSet.getRow( cursor ) );
+      updateItems();
     }
   }
 
   private void showNext() {
     if( cursor < dataSet.getRowCount() - 1 ) {
       cursor++;
-      updateItems( dataSet.getRow( cursor ) );
+      updateItems();
     }
   }
 
-  private void updateItems( DataItem row ) {
+  private void updateItems() {
+    DataItem row = dataSet.getRow( cursor );
     yearLabel.setText( row.getText() );
     float[] values = row.getValues();
     TableItem[] tableItems = table.getItems();

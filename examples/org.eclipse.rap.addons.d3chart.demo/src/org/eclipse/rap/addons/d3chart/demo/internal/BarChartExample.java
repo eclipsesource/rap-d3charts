@@ -31,14 +31,13 @@ import org.eclipse.swt.widgets.Listener;
 
 public class BarChartExample implements IExamplePage {
 
-  private Colors colors;
+  private final Colors colors = Colors.cat10Colors();
   private BarChart barChart;
   private PieChart pieChart;
   private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
-    colors = Colors.cat10Colors();
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     createChartPart( parent );
     createControlPart( parent );
@@ -52,6 +51,7 @@ public class BarChartExample implements IExamplePage {
     pieChart.setLayoutData( new GridData( 300, 200 ) );
     barChart = new BarChart( composite, SWT.BORDER );
     barChart.setLayoutData( new GridData( 300, 300 ) );
+    updateCharts();
   }
 
   private void createControlPart( Composite parent ) {
@@ -63,16 +63,14 @@ public class BarChartExample implements IExamplePage {
       public void handleEvent( Event event ) {
         float value = ( float )( Math.random() * 0.8 );
         addItem( value, toCss( colors.next() ) );
-        pieChart.setChartData( items );
-        barChart.setChartData( items );
+        updateCharts();
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "Remove item", new Listener() {
       @Override
       public void handleEvent( Event event ) {
         removeItem();
-        pieChart.setChartData( items );
-        barChart.setChartData( items );
+        updateCharts();
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "small bars", new Listener() {
@@ -112,6 +110,11 @@ public class BarChartExample implements IExamplePage {
         barChart.getParent().layout();
       }
     } );
+  }
+
+  private void updateCharts() {
+    pieChart.setChartData( items );
+    barChart.setChartData( items );
   }
 
   private static Button createButton( Composite parent, String text, Listener listener ) {

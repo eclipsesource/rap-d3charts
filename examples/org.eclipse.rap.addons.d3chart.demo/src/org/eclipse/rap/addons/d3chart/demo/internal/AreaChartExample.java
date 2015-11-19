@@ -30,16 +30,14 @@ import org.eclipse.swt.widgets.Listener;
 
 public class AreaChartExample implements IExamplePage {
 
-  private DataSet dataSet;
+  private final Colors colors = Colors.cat10Colors();
+  private DataSet dataSet = ExampleData.BROWSER_QUARTERLY_EUROPE;
   private StreamChart chart;
-  private Colors colors;
-  private JsonArray items = new JsonArray();
+  private JsonArray items = createItems();
 
   @Override
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
-    dataSet = ExampleData.BROWSER_QUARTERLY_EUROPE;
-    colors = Colors.cat10Colors();
     createChartPart( parent );
     createControlPart( parent );
   }
@@ -52,7 +50,6 @@ public class AreaChartExample implements IExamplePage {
     GridData layoutData = new GridData( SWT.FILL, SWT.DEFAULT, true, false );
     layoutData.heightHint = 300;
     chart.setLayoutData( layoutData );
-    createItems();
     update();
   }
 
@@ -60,16 +57,18 @@ public class AreaChartExample implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, false ) );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    createButton( composite, "Europe", ExampleData.BROWSER_QUARTERLY_EUROPE ).setSelection( true );
+    createButton( composite, "Europe", ExampleData.BROWSER_QUARTERLY_EUROPE );
     createButton( composite, "North America", ExampleData.BROWSER_QUARTERLY_NORTHAMERICA );
     createButton( composite, "Asia", ExampleData.BROWSER_QUARTERLY_ASIA );
     createButton( composite, "Africa", ExampleData.BROWSER_QUARTERLY_AFRICA );
   }
 
-  private void createItems() {
+  private JsonArray createItems() {
+    JsonArray items = new JsonArray();
     for( String browser : dataSet.getColumns() ) {
       items.add( new JsonObject().set( "text", browser ).set( "color", toCss( colors.next() ) ) );
     }
+    return items;
   }
 
   private void update() {
@@ -88,6 +87,7 @@ public class AreaChartExample implements IExamplePage {
       }
     } );
     button.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
+    button.setSelection( dataSet.equals( data ) );
     return button;
   }
 

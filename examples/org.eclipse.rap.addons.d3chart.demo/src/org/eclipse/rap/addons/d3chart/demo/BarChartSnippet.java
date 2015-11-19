@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo;
 
+import static org.eclipse.rap.addons.d3chart.demo.internal.data.Colors.toCss;
+
 import org.eclipse.rap.addons.d3chart.BarChart;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.json.JsonArray;
@@ -33,9 +35,9 @@ public class BarChartSnippet extends AbstractEntryPoint {
   private static JsonArray createData() {
     Colors colors = Colors.cat10Colors();
     return new JsonArray()
-      .add( createItem( "Chrome", Colors.toCss( colors.next() ), 0.4f ) )
-      .add( createItem( "Firefox", Colors.toCss( colors.next() ), 0.2f ) )
-      .add( createItem( "IE", Colors.toCss( colors.next() ), 0.3f ) );
+      .add( createItem( "Chrome", toCss( colors.next() ), 0.4f ) )
+      .add( createItem( "Firefox", toCss( colors.next() ), 0.2f ) )
+      .add( createItem( "IE", toCss( colors.next() ), 0.3f ) );
   }
 
   private static JsonObject createItem( String text, String color, float value ) {

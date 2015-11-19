@@ -84,12 +84,12 @@ public class Colors {
   }
 
   public static String toCss( RGB color ) {
-    StringBuilder sb = new StringBuilder();
-    sb.append( "#" );
-    sb.append( getHexStr( color.red ) );
-    sb.append( getHexStr( color.green ) );
-    sb.append( getHexStr( color.blue ) );
-    return sb.toString();
+    return new StringBuilder()
+      .append( "#" )
+      .append( getHexStr( color.red ) )
+      .append( getHexStr( color.green ) )
+      .append( getHexStr( color.blue ) )
+      .toString();
   }
 
   private static String getHexStr( int value ) {
