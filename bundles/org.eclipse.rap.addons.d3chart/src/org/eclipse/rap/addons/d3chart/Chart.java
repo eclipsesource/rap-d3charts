@@ -26,12 +26,15 @@ import org.eclipse.swt.widgets.Listener;
 
 public abstract class Chart extends Canvas {
 
+  private static final String REMOTE_TYPE = "d3chart.Chart";
+
   protected final RemoteObject remoteObject;
 
-  public Chart( Composite parent, int style, String remoteType ) {
+  public Chart( Composite parent, int style, String renderer ) {
     super( parent, style );
-    remoteObject = RWT.getUISession().getConnection().createRemoteObject( remoteType );
+    remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", getId( this ) );
+    remoteObject.set( "renderer", renderer );
     remoteObject.setHandler( new AbstractOperationHandler() {
       @Override
       public void handleNotify( String eventName, JsonObject properties ) {
@@ -48,6 +51,11 @@ public abstract class Chart extends Canvas {
   public void setChartData( JsonArray data ) {
     checkWidget();
     remoteObject.set( "items", data );
+  }
+
+  protected void setConfig( JsonObject config ) {
+    checkWidget();
+    remoteObject.set( "config", config );
   }
 
   @Override

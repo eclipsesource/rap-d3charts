@@ -9,117 +9,87 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.StreamChart = function( parent ) {
-  d3chart.Chart.call( this, parent, {});
-  this._stack = d3.layout.stack()
+d3chart.streamChart = function() {
+
+  var stack = d3.layout.stack()
     .offset( "wiggle" )
     .values( function( d ) { return d.values; } );
-};
+  var area = d3.svg.area();
 
-d3chart.StreamChart.prototype = d3chart.extend({}, d3chart.Chart.prototype, {
+  return {
 
-  layout: function() {
-    this._layer = this.getLayer( "layer" );
+    layout: function( chart ) {
+      var padding = chart._padding;
+      var width = chart._width - padding * 2;
+      var height = chart._height - padding * 2;
+      var xScale = d3.scale.linear()
+        .domain( [ 0, 17 ] )
+        .range( [ padding, width ] );
+      var yScale = d3.scale.linear()
+        .domain( [ 0, 160 ] )
+        .range( [ height, padding ] );
+      area
+        .x( function( d ) { return xScale( d.x ); } )
+        .y0( function( d ) { return yScale( d.y0 ); } )
+        .y1( function( d ) { return yScale( d.y0 + d.y ); } );
+    },
 
-    var padding = this._padding;
-    var width = this._width - this._padding * 2;
-    var height = this._height - this._padding * 2;
+    render: function( chart, data ) {
+      var items = data.map( function( item ) {
+        return {
+          item: item,
+          values: ( item.values || []).map( function( value, index ) {
+            return { x: index, y: value };
+          } )
+        };
+      } );
+      var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( stack( items ) );
+      createElements( selection.enter(), chart );
+      updateElements( selection );
+      removeElements( selection.exit() );
+    }
 
-    this._xScale = d3.scale.linear()
-      .domain( [ 0, 17 ] )
-      .range( [ padding, width ] );
-    this._yScale = d3.scale.linear()
-      .domain( [ 0, 160 ] )
-      .range( [ height, padding ] );
-    var that = this;
-    this._area = d3.svg.area()
-      .x( function( d ) { return that._xScale( d.x ); } )
-      .y0( function( d ) { return that._yScale( d.y0 ); } )
-      .y1( function( d ) { return that._yScale( d.y0 + d.y ); } );
-  },
+  };
 
-  render: function() {
-
-    var data = this._data.map( function( item ) {
-      return {
-        item: item,
-        values: (item.values || []).map( function( value, index ) {
-          return { x: index, y: value };
-        } )
-      };
-    } );
-    var selection = this._layer.selectAll( "g.item" )
-      .data( this._stack( data ) ); // , function( item ) { return item.id(); }
-
-    this._createElements( selection.enter() );
-    this._updateElements( selection );
-    this._removeElements( selection.exit() );
-  },
-
-  _createElements: function( selection ) {
-    var that = this;
+  function createElements( selection, chart ) {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { that._selectItem( index ); } );
-    this._createStreams( items );
-    this._createTexts( items );
-  },
+    items.on( "click", function( datum, index ) { chart.notifySelect( index ); } );
+    createStreams( items );
+    createTexts( items );
+  }
 
-  _createStreams: function( selection ) {
-    var that = this;
+  function createStreams( selection ) {
     selection.append( "svg:path" )
-      .attr( "d", function( d ) { return that._area( d.values ); } )
+      .attr( "d", function( d ) { return area( d.values ); } )
       .style( "fill", function( d ) { return d.item.color || "#000"; } )
       .append( "svg:title" )
         .text( function( d ) { return d.item.text || ""; } );
-  },
+  }
 
-  _createTexts: function( selection ) {
+  function createTexts( selection ) {
     selection.append( "svg:text" )
       .attr( "text", function( d ) { return d.item.text || ""; } );
-  },
+  }
 
-  _updateElements: function( selection ) {
-    this._updateStreams( selection.select( "path" ) );
-  },
+  function updateElements( selection ) {
+    updateStreams( selection.select( "path" ) );
+  }
 
-  _updateStreams: function( selection ) {
-    var that = this;
+  function updateStreams( selection ) {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "d", function( d ) { return that._area( d.values ); } );
-  },
+      .attr( "d", function( d ) { return area( d.values ); } );
+  }
 
-  _removeElements: function( selection ) {
+  function removeElements( selection ) {
     selection
       .transition()
       .duration( 400 )
       .attr( "opacity", 0.0 )
       .remove();
-  },
-
-  _selectItem: function( index ) {
-    var remoteObject = rap.getRemoteObject( this );
-    remoteObject.notify( "Selection", { "index": index } );
   }
 
-});
-
-// TYPE HANDLER
-
-rap.registerTypeHandler( "d3chart.StreamChart", {
-
-  factory: function( properties ) {
-    var parent = rap.getObject( properties.parent );
-    return new d3chart.StreamChart( parent );
-  },
-
-  destructor: "destroy",
-
-  properties: [ "config", "items" ],
-
-  events: [ "Selection" ]
-
-} );
+};

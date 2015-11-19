@@ -16,14 +16,13 @@ import org.eclipse.swt.widgets.Composite;
 
 public class PieChart extends Chart {
 
-  private static final String REMOTE_TYPE = "d3chart.PieChart";
-
   private float startAngle = 0;
   private float endAngle = 1;
   private float innerRadius = 0;
 
   public PieChart( Composite parent, int style ) {
-    super( parent, style, REMOTE_TYPE );
+    super( parent, style, "pieChart" );
+    updateConfig();
   }
 
   public float getStartAngle() {
@@ -66,13 +65,11 @@ public class PieChart extends Chart {
   }
 
   private void updateConfig() {
-    checkWidget();
-    JsonObject config = new JsonObject()
+    setConfig( new JsonObject()
       .add( "startAngle", startAngle * Math.PI * 2 )
       .add( "endAngle", endAngle * Math.PI * 2 )
       .add( "innerRadius", innerRadius )
-      .add( "outerRadius", 1 );
-    remoteObject.set( "config", config );
+      .add( "outerRadius", 1 ) );
   }
 
 }

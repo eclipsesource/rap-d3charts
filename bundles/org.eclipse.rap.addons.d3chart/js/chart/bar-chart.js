@@ -9,116 +9,86 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.BarChart = function( parent ) {
-  d3chart.Chart.call( this, parent, {
-    barWidth: 25,
-    spacing: 2
-  });
-};
+d3chart.barChart = function() {
 
-d3chart.BarChart.prototype = d3chart.extend({}, d3chart.Chart.prototype, {
+  var xScale = d3.scale.linear().domain( [ 0, 1 ] );
 
-  layout: function() {
-    this._layer = this.getLayer( "layer" );
-  },
+  return {
 
-  render: function() {
-    this._xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, this._width - this._padding * 2 ] );
-    var selection = this._layer.selectAll( "g.item" ).data( this._data );
-    this._createElements( selection.enter() );
-    this._updateElements( selection );
-    this._removeElements( selection.exit() );
-  },
+    layout: function() {},
 
-  _createElements: function( selection ) {
-    var that = this;
+    render: function( chart, data ) {
+      xScale.range( [ 0, chart._width - chart._padding * 2 ] );
+      var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( data );
+      createElements( selection.enter(), chart );
+      updateElements( selection, chart );
+      removeElements( selection.exit() );
+    }
+
+  };
+
+  function createElements( selection, chart ) {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { that._selectItem( index ); } );
-    this._createBars( items );
-    this._createTexts( items );
-  },
+    items.on( "click", function( datum, index ) { chart.notifySelection( index ); } );
+    createBars( items, chart );
+    createTexts( items, chart );
+  }
 
-  _createBars: function( selection ) {
-    var that = this;
+  function createBars( selection, chart ) {
     selection.append( "svg:rect" )
-      .attr( "x", that._padding )
-      .attr( "y", function( item, index ) { return that._getOffset( index ); } )
+      .attr( "x", chart._padding )
+      .attr( "y", function( item, index ) { return getOffset( chart, index ); } )
       .attr( "width", 0 )
-      .attr( "height", that._config.barWidth )
+      .attr( "height", chart._config.barWidth )
       .attr( "fill", function( item ) { return item.color || "#000"; } );
-  },
+  }
 
-  _createTexts: function( selection ) {
-    var that = this;
+  function createTexts( selection, chart ) {
     selection.append( "svg:text" )
-      .attr( "x", that._padding )
-      .attr( "y", function( item, index ) { return that._getOffset( index ) + that._config.barWidth / 2; } )
+      .attr( "x", chart._padding )
+      .attr( "y", function( item, index ) { return getOffset( chart, index ) + chart._config.barWidth / 2; } )
       .attr( "text-anchor", "left" )
       .attr( "dy", ".35em" )
       .style( "font-family", "sans-serif" )
       .style( "font-size", "11px" );
-  },
+  }
 
-  _updateElements: function( selection ) {
-    this._updateBars( selection.select( "rect" ) );
-    this._updateTexts( selection.select( "text" ) );
-  },
+  function updateElements( selection, chart ) {
+    updateBars( selection.select( "rect" ), chart );
+    updateTexts( selection.select( "text" ), chart );
+  }
 
-  _updateBars: function( selection ) {
-    var that = this;
+  function updateBars( selection, chart ) {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "y", function( item, index ) { return that._getOffset( index ); } )
-      .attr( "width", function( item ) { return that._xScale( item.value || 0 ); } )
-      .attr( "height", that._config.barWidth )
+      .attr( "y", function( item, index ) { return getOffset( chart, index ); } )
+      .attr( "width", function( item ) { return xScale( item.value || 0 ); } )
+      .attr( "height", chart._config.barWidth )
       .attr( "fill", function( item ) { return item.color || "#000"; } );
-  },
+  }
 
-  _updateTexts: function( selection ) {
-    var that = this;
+  function updateTexts( selection, chart ) {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "x", function( item ) { return that._padding + 6 + that._xScale( item.value || 0 ); } )
-      .attr( "y", function( item, index ) { return that._getOffset( index ) + that._config.barWidth / 2; } )
+      .attr( "x", function( item ) { return chart._padding + 6 + xScale( item.value || 0 ); } )
+      .attr( "y", function( item, index ) { return getOffset( chart, index ) + chart._config.barWidth / 2; } )
       .text( function( item ) { return item.text || ""; } );
-  },
+  }
 
-  _removeElements: function( selection ) {
+  function removeElements( selection ) {
     selection
       .transition()
       .duration( 400 )
       .attr( "opacity", 0.0 )
       .remove();
-  },
-
-  _selectItem: function( index ) {
-    var remoteObject = rap.getRemoteObject( this );
-    remoteObject.notify( "Selection", { "index": index } );
-  },
-
-  _getOffset: function( index ) {
-    return this._padding + index * ( this._config.barWidth + this._config.spacing );
   }
 
-});
+  function getOffset( chart, index ) {
+    return chart._padding + index * ( chart._config.barWidth + chart._config.spacing );
+  }
 
-// TYPE HANDLER
-
-rap.registerTypeHandler( "d3chart.BarChart", {
-
-  factory: function( properties ) {
-    var parent = rap.getObject( properties.parent );
-    return new d3chart.BarChart( parent );
-  },
-
-  destructor: "destroy",
-
-  properties: [ "config", "items" ],
-
-  events: [ "Selection" ]
-
-} );
+};

@@ -11,9 +11,10 @@
 
 d3chart = {};
 
-d3chart.Chart = function( parent, config ) {
+d3chart.Chart = function( parent, renderer ) {
   this._data = [];
-  this._config = config;
+  this._config = {};
+  this._renderer = renderer;
   this._element = this.createElement( parent );
   this._padding = 20;
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
@@ -21,10 +22,10 @@ d3chart.Chart = function( parent, config ) {
   rap.on( "render", function() {
     if( this._needsRender ) {
       if( this._needsLayout ) {
-        this.layout();
+        this._renderer.layout( this );
         this._needsLayout = false;
       }
-      this.render();
+      this._renderer.render( this, this._data );
       this._needsRender = false;
     }
   }.bind( this ) );
@@ -35,12 +36,6 @@ d3chart.Chart = function( parent, config ) {
 };
 
 d3chart.Chart.prototype = {
-
-  render: function() {
-  },
-
-  layout: function() {
-  },
 
   setConfig: function( config ) {
     this._config = config;
@@ -70,6 +65,11 @@ d3chart.Chart.prototype = {
       layer = this._svg.select( "g." + name );
     }
     return layer;
+  },
+
+  notifySelection: function( index ) {
+    var remoteObject = rap.getRemoteObject( this );
+    remoteObject.notify( "Selection", { "index": index } );
   },
 
   _resize: function( clientArea ) {
@@ -104,3 +104,21 @@ d3chart.extend = function( target ) {
   }
   return target;
 };
+
+// TYPE HANDLER
+
+rap.registerTypeHandler( "d3chart.Chart", {
+
+  factory: function( properties ) {
+    var parent = rap.getObject( properties.parent );
+    var renderer = d3chart[properties.renderer]();
+    return new d3chart.Chart( parent, renderer );
+  },
+
+  destructor: "destroy",
+
+  properties: [ "config", "items" ],
+
+  events: [ "Selection" ]
+
+} );
