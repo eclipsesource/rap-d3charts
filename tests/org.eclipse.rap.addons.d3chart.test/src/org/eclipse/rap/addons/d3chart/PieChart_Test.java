@@ -14,11 +14,15 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
+import org.mockito.ArgumentCaptor;
+
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.addons.d3chart.PieChart;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.TestContext;
@@ -36,6 +40,7 @@ public class PieChart_Test {
   private Shell shell;
   private RemoteObject remoteObject;
   private Connection connection;
+  private PieChart chart;
 
   @Rule
   public TestContext context = new TestContext();
@@ -46,94 +51,86 @@ public class PieChart_Test {
     shell = new Shell( display );
     remoteObject = mock( RemoteObject.class );
     connection = fakeConnection( remoteObject );
+    chart = new PieChart( shell, SWT.NONE );
   }
 
   @Test
   public void testCreate_createsRemoteObject() {
-    new PieChart( shell, SWT.NONE );
+    verify( connection ).createRemoteObject( eq( "d3chart.Chart" ) );
+  }
 
-    verify( connection ).createRemoteObject( eq( "d3chart.PieChart" ) );
+  @Test
+  public void testCreate_setsRenderer() {
+    verify( remoteObject ).set( "renderer", "pieChart" );
   }
 
   @Test
   public void testInnerRadius_defaultValue() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
-
-    float innerRadius = pieChart.getInnerRadius();
-
-    assertEquals( 0, innerRadius, 0 );
+    assertEquals( 0, chart.getInnerRadius(), 0 );
   }
 
   @Test
   public void testInnerRadius_changeValue() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
+    chart.setInnerRadius( 0.5f );
 
-    pieChart.setInnerRadius( 0.5f );
-
-    assertEquals( 0.5, pieChart.getInnerRadius(), 0 );
+    assertEquals( 0.5, chart.getInnerRadius(), 0 );
   }
 
   @Test
   public void testInnerRadius_isRendered() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
+    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
+    reset( remoteObject );
 
-    pieChart.setInnerRadius( 0.5f );
+    chart.setInnerRadius( 0.5f );
 
-    verify( remoteObject ).set( eq( "innerRadius" ), eq( 0.5 ) );
+    verify( remoteObject ).set( eq( "config" ), captor.capture() );
+    assertEquals( 0.5, captor.getValue().get( "innerRadius" ).asDouble(), 0 );
   }
 
   @Test
   public void testStartAngle_defaultValue() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
-
-    float startAngle = pieChart.getStartAngle();
-
-    assertEquals( 0, startAngle, 0 );
+    assertEquals( 0, chart.getStartAngle(), 0 );
   }
 
   @Test
   public void testStartAngle_changeValue() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
+    chart.setStartAngle( 0.5f );
 
-    pieChart.setStartAngle( 0.5f );
-
-    assertEquals( 0.5, pieChart.getStartAngle(), 0 );
+    assertEquals( 0.5, chart.getStartAngle(), 0 );
   }
 
   @Test
   public void testStartAngle_isRendered() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
+    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
+    reset( remoteObject );
 
-    pieChart.setStartAngle( 0.5f );
+    chart.setStartAngle( -0.5f );
 
-    verify( remoteObject ).set( eq( "startAngle" ), eq( 0.5 * Math.PI * 2 ) );
+    verify( remoteObject ).set( eq( "config" ), captor.capture() );
+    assertEquals( -Math.PI, captor.getValue().get( "startAngle" ).asDouble(), 0 );
   }
 
   @Test
   public void testEndAngle_defaultValue() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
-
-    float endAngle = pieChart.getEndAngle();
-
-    assertEquals( 1, endAngle, 0 );
+    assertEquals( 1, chart.getEndAngle(), 0 );
   }
 
   @Test
   public void testEndAngle_changeValue() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
+    chart.setEndAngle( 0.5f );
 
-    pieChart.setEndAngle( 0.5f );
-
-    assertEquals( 0.5, pieChart.getEndAngle(), 0 );
+    assertEquals( 0.5, chart.getEndAngle(), 0 );
   }
 
   @Test
   public void testEndAngle_isRendered() {
-    PieChart pieChart = new PieChart( shell, SWT.NONE );
+    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
+    reset( remoteObject );
 
-    pieChart.setEndAngle( 0.5f );
+    chart.setEndAngle( 0.5f );
 
-    verify( remoteObject ).set( eq( "endAngle" ), eq( 0.5 * Math.PI * 2 ) );
+    verify( remoteObject ).set( eq( "config" ), captor.capture() );
+    assertEquals( Math.PI, captor.getValue().get( "endAngle" ).asDouble(), 0 );
   }
 
   private Connection fakeConnection( RemoteObject remoteObject ) {

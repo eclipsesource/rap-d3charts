@@ -16,6 +16,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -71,16 +72,17 @@ public class Chart_Test {
 
   @Test
   public void testCreate_createsRemoteObject() {
-    new Chart( shell, SWT.BORDER, "remote type" ) {};
+    new Chart( shell, SWT.BORDER, "renderer type" ) {};
 
-    verify( connection ).createRemoteObject( eq( "remote type" ) );
+    verify( connection ).createRemoteObject( eq( "d3chart.Chart" ) );
   }
 
   @Test
-  public void testCreate_setsRemoteParent() {
-    Chart chart = new Chart( shell, SWT.BORDER, "remote type" ) {};
+  public void testCreate_setsRemoteParentAndRenderer() {
+    Chart chart = new Chart( shell, SWT.BORDER, "foo" ) {};
 
     verify( remoteObject ).set( eq( "parent" ), eq( WidgetUtil.getId( chart ) ) );
+    verify( remoteObject ).set( eq( "renderer" ), eq( "foo" ) );
   }
 
   @Test
@@ -108,6 +110,16 @@ public class Chart_Test {
     chart.setChartData( data );
 
     verify( remoteObject ).set( "items", data );
+  }
+
+  @Test
+  public void testSetConfig_isRendered() {
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
+    JsonObject config = new JsonObject().add( "foo", 23 ).add( "bar", 42 );
+
+    chart.setConfig( config );
+
+    verify( remoteObject ).set( "config", config );
   }
 
   @Test

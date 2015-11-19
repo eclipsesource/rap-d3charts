@@ -15,6 +15,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.TestContext;
@@ -25,8 +26,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,6 +41,7 @@ public class BarChart_Test {
   private Shell shell;
   private RemoteObject remoteObject;
   private Connection connection;
+  private BarChart chart;
 
   @Rule
   public TestContext context = new TestContext();
@@ -48,115 +52,103 @@ public class BarChart_Test {
     shell = new Shell( display );
     remoteObject = mock( RemoteObject.class );
     connection = fakeConnection( remoteObject );
+    chart = new BarChart( shell, SWT.NONE );
   }
 
   @Test
   public void testCreate_createsRemoteObject() {
-    new BarChart( shell, SWT.NONE );
+    verify( connection ).createRemoteObject( eq( "d3chart.Chart" ) );
+  }
 
-    verify( connection ).createRemoteObject( eq( "d3chart.BarChart" ) );
+  @Test
+  public void testCreate_setsRenderer() {
+    verify( remoteObject ).set( "renderer", "barChart" );
   }
 
   @Test
   public void testGetBarWidth_hasDefault() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-
-    int result = barChart.getBarWidth();
-
-    assertEquals( 25, result );
+    assertEquals( 25, chart.getBarWidth() );
   }
 
   @Test( expected = SWTException.class )
   public void testGetBarWidth_checksWidget() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-    barChart.dispose();
+    chart.dispose();
 
-    barChart.getBarWidth();
+    chart.getBarWidth();
   }
 
   @Test
   public void testSetBarWidth_changesValue() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
+    chart.setBarWidth( 42 );
 
-    barChart.setBarWidth( 42 );
-
-    assertEquals( 42, barChart.getBarWidth() );
+    assertEquals( 42, chart.getBarWidth() );
   }
 
   @Test( expected = SWTException.class )
   public void testSetBarWidth_checksWidget() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-    barChart.dispose();
+    chart.dispose();
 
-    barChart.setBarWidth( 42 );
+    chart.setBarWidth( 42 );
   }
 
   @Test
   public void testSetBarWidth_isRendered() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
+    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
+    reset( remoteObject );
 
-    barChart.setBarWidth( 42 );
+    chart.setBarWidth( 42 );
 
-    verify( remoteObject ).set( eq( "barWidth" ), eq( 42 ) );
+    verify( remoteObject ).set( eq( "config" ), captor.capture() );
+    assertEquals( 42, captor.getValue().get( "barWidth" ).asInt() );
   }
 
   @Test
   public void testSetBarWidth_notRenderedIfUnchanged() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-
-    barChart.setBarWidth( barChart.getBarWidth() );
+    chart.setBarWidth( chart.getBarWidth() );
 
     verify( remoteObject, times( 0 ) ).set( eq( "barWidth" ), anyInt() );
   }
 
   @Test
   public void testGetSpacing_hasDefault() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-
-    int result = barChart.getSpacing();
-
-    assertEquals( 2, result );
+    assertEquals( 2, chart.getSpacing() );
   }
 
   @Test( expected = SWTException.class )
   public void testGetSpacing_checksWidget() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-    barChart.dispose();
+    chart.dispose();
 
-    barChart.getSpacing();
+    chart.getSpacing();
   }
 
   @Test
   public void testSetSpacing_changesValue() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
+    chart.setSpacing( 23 );
 
-    barChart.setSpacing( 23 );
-
-    assertEquals( 23, barChart.getSpacing() );
+    assertEquals( 23, chart.getSpacing() );
   }
 
   @Test( expected = SWTException.class )
   public void testSetSpacing_checksWidget() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-    barChart.dispose();
+    chart.dispose();
 
-    barChart.setSpacing( 2 );
+    chart.setSpacing( 2 );
   }
 
   @Test
   public void testSetSpacing_isRendered() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
+    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
+    reset( remoteObject );
 
-    barChart.setSpacing( 23 );
+    chart.setSpacing( 23 );
 
-    verify( remoteObject ).set( eq( "spacing" ), eq( 23 ) );
+    verify( remoteObject ).set( eq( "config" ), captor.capture() );
+    assertEquals( 23, captor.getValue().get( "spacing" ).asInt() );
   }
 
   @Test
   public void testSetSpacing_notRenderedIfUnchanged() {
-    BarChart barChart = new BarChart( shell, SWT.NONE );
-
-    barChart.setSpacing( barChart.getSpacing() );
+    chart.setSpacing( chart.getSpacing() );
 
     verify( remoteObject, times( 0 ) ).set( eq( "spacing" ), anyInt() );
   }

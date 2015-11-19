@@ -54,7 +54,6 @@ public abstract class Chart extends Canvas {
   }
 
   protected void setConfig( JsonObject config ) {
-    checkWidget();
     remoteObject.set( "config", config );
   }
 
@@ -80,10 +79,6 @@ public abstract class Chart extends Canvas {
     if( eventType == SWT.Selection && wasListening && !isListening( SWT.Selection ) ) {
       remoteObject.listen( "Selection", false );
     }
-  }
-
-  String getRemoteId() {
-    return remoteObject.getId();
   }
 
 }
