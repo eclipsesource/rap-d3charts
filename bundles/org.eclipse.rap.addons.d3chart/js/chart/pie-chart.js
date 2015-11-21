@@ -24,7 +24,7 @@ d3chart.pieChart = function() {
     innerRadius: 0
   };
 
-  function render( chart, data ) {
+  function render( selection, chart ) {
     var centerX = config.width / 2;
     var centerY = config.height / 2;
     var maxRadius = Math.min( centerX, centerY ) - config.margin;
@@ -34,14 +34,17 @@ d3chart.pieChart = function() {
     arc
       .outerRadius( config.outerRadius * maxRadius )
       .innerRadius( config.innerRadius * maxRadius );
-    var layer = chart.getLayer( "layer" );
-    layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
-    var selection = layer.selectAll( "g.segment" )
-      .data( layout( data ) );
+    // TODO improve
+    var root = selection.select( "g.root" );
+    if( root.empty() ) {
+      root = selection.append( "svg:g" ).attr( "class", "root" );
+    }
+    root.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
+    var segments = root.selectAll( "g.segment" ).data( layout( selection.datum() ) );
     show( selection );
-    updateSegments( selection );
-    createSegments( selection.enter(), chart );
-    removeSegments( selection.exit() );
+    updateSegments( segments );
+    createSegments( segments.enter(), chart );
+    removeSegments( segments.exit() );
   }
 
   d3chart.addConfigOptions( render, config );

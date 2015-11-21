@@ -18,7 +18,8 @@ d3chart.Chart = function( parent, renderer ) {
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   rap.on( "render", function() {
     if( this._needsRender ) {
-      this._renderer( this, this._data );
+      this._svg.datum( this._data );
+      this._renderer( this._svg, this );
       this._needsRender = false;
     }
   }.bind( this ) );
@@ -53,15 +54,6 @@ d3chart.Chart.prototype = {
     element.style.height = "100%";
     parent.append( element );
     return element;
-  },
-
-  getLayer: function( name ) {
-    var layer = this._svg.select( "g." + name );
-    if( layer.empty() ) {
-      this._svg.append( "svg:g" ).attr( "class", name );
-      layer = this._svg.select( "g." + name );
-    }
-    return layer;
   },
 
   notifySelection: function( index ) {

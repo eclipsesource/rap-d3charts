@@ -20,12 +20,12 @@ d3chart.barChart = function() {
     spacing: 2
   };
 
-  function render( chart, data ) {
+  function render( selection, chart ) {
     xScale.range( [ 0, config.width - config.margin * 2 ] );
-    var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( data );
-    createElements( selection.enter(), chart );
-    updateElements( selection );
-    removeElements( selection.exit() );
+    var items = selection.selectAll( "g.item" ).data( selection.datum() );
+    createElements( items.enter(), chart );
+    updateElements( items );
+    removeElements( items.exit() );
   }
 
   d3chart.addConfigOptions( render, config );

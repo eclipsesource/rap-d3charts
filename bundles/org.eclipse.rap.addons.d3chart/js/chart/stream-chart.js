@@ -21,7 +21,7 @@ d3chart.streamChart = function() {
     margin: 0
   };
 
-  function render( chart, data ) {
+  function render( selection, chart ) {
     var width = config.width - config.margin * 2;
     var height = config.height - config.margin * 2;
     var xScale = d3.scale.linear()
@@ -34,7 +34,7 @@ d3chart.streamChart = function() {
       .x( function( d ) { return xScale( d.x ); } )
       .y0( function( d ) { return yScale( d.y0 ); } )
       .y1( function( d ) { return yScale( d.y0 + d.y ); } );
-    var items = data.map( function( item ) {
+    var dataItems = selection.datum().map( function( item ) {
       return {
         item: item,
         values: ( item.values || []).map( function( value, index ) {
@@ -42,10 +42,10 @@ d3chart.streamChart = function() {
         } )
       };
     } );
-    var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( stack( items ) );
-    createElements( selection.enter(), chart );
-    updateElements( selection );
-    removeElements( selection.exit() );
+    var items = selection.selectAll( "g.item" ).data( stack( dataItems ) );
+    createElements( items.enter(), chart );
+    updateElements( items );
+    removeElements( items.exit() );
   }
 
   d3chart.addConfigOptions( render, config );
