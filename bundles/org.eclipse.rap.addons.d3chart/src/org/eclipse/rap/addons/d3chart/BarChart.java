@@ -21,7 +21,6 @@ public class BarChart extends Chart {
 
   public BarChart( Composite parent, int style ) {
     super( parent, style, "barChart" );
-    updateConfig();
   }
 
   public int getBarWidth() {

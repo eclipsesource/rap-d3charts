@@ -22,7 +22,6 @@ public class PieChart extends Chart {
 
   public PieChart( Composite parent, int style ) {
     super( parent, style, "pieChart" );
-    updateConfig();
   }
 
   public float getStartAngle() {

@@ -12,14 +12,23 @@
 d3chart.barChart = function() {
 
   var xScale = d3.scale.linear().domain( [ 0, 1 ] );
+  var config = {
+    width: 0,
+    height: 0,
+    margin: 0,
+    barWidth: 25,
+    spacing: 2
+  };
 
   function render( chart, data ) {
-    xScale.range( [ 0, chart._width - chart._padding * 2 ] );
+    xScale.range( [ 0, config.width - config.margin * 2 ] );
     var selection = chart.getLayer( "layer" ).selectAll( "g.item" ).data( data );
     createElements( selection.enter(), chart );
-    updateElements( selection, chart );
+    updateElements( selection );
     removeElements( selection.exit() );
   }
+
+  d3chart.addConfigOptions( render, config );
 
   return render;
 
@@ -28,50 +37,38 @@ d3chart.barChart = function() {
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
     items.on( "click", function( datum, index ) { chart.notifySelection( index ); } );
-    createBars( items, chart );
-    createTexts( items, chart );
-  }
-
-  function createBars( selection, chart ) {
-    selection.append( "svg:rect" )
-      .attr( "x", chart._padding )
-      .attr( "y", function( item, index ) { return getOffset( chart, index ); } )
+    // createBars
+    items.append( "svg:rect" )
+      .attr( "x", config.margin )
+      .attr( "y", function( item, index ) { return getOffset( index ); } )
       .attr( "width", 0 )
-      .attr( "height", chart._config.barWidth )
+      .attr( "height", config.barWidth )
       .attr( "fill", function( item ) { return item.color || "#000"; } );
-  }
-
-  function createTexts( selection, chart ) {
-    selection.append( "svg:text" )
-      .attr( "x", chart._padding )
-      .attr( "y", function( item, index ) { return getOffset( chart, index ) + chart._config.barWidth / 2; } )
+    // createTexts
+    items.append( "svg:text" )
+      .attr( "x", config.margin )
+      .attr( "y", function( item, index ) { return getOffset( index ) + config.barWidth / 2; } )
       .attr( "text-anchor", "left" )
       .attr( "dy", ".35em" )
       .style( "font-family", "sans-serif" )
       .style( "font-size", "11px" );
   }
 
-  function updateElements( selection, chart ) {
-    updateBars( selection.select( "rect" ), chart );
-    updateTexts( selection.select( "text" ), chart );
-  }
-
-  function updateBars( selection, chart ) {
-    selection
+  function updateElements( selection ) {
+    // updateBars
+    selection.select( "rect" )
       .transition()
       .duration( 1000 )
-      .attr( "y", function( item, index ) { return getOffset( chart, index ); } )
+      .attr( "y", function( item, index ) { return getOffset( index ); } )
       .attr( "width", function( item ) { return xScale( item.value || 0 ); } )
-      .attr( "height", chart._config.barWidth )
+      .attr( "height", config.barWidth )
       .attr( "fill", function( item ) { return item.color || "#000"; } );
-  }
-
-  function updateTexts( selection, chart ) {
-    selection
+    // updateTexts
+    selection.select( "text" )
       .transition()
       .duration( 1000 )
-      .attr( "x", function( item ) { return chart._padding + 6 + xScale( item.value || 0 ); } )
-      .attr( "y", function( item, index ) { return getOffset( chart, index ) + chart._config.barWidth / 2; } )
+      .attr( "x", function( item ) { return config.margin + 6 + xScale( item.value || 0 ); } )
+      .attr( "y", function( item, index ) { return getOffset( index ) + config.barWidth / 2; } )
       .text( function( item ) { return item.text || ""; } );
   }
 
@@ -83,8 +80,8 @@ d3chart.barChart = function() {
       .remove();
   }
 
-  function getOffset( chart, index ) {
-    return chart._padding + index * ( chart._config.barWidth + chart._config.spacing );
+  function getOffset( index ) {
+    return config.margin + index * ( config.barWidth + config.spacing );
   }
 
 };

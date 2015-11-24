@@ -15,17 +15,21 @@ d3chart.streamChart = function() {
     .offset( "wiggle" )
     .values( function( d ) { return d.values; } );
   var area = d3.svg.area();
+  var config = {
+    width: 0,
+    height: 0,
+    margin: 0
+  };
 
   function render( chart, data ) {
-    var padding = chart._padding;
-    var width = chart._width - padding * 2;
-    var height = chart._height - padding * 2;
+    var width = config.width - config.margin * 2;
+    var height = config.height - config.margin * 2;
     var xScale = d3.scale.linear()
       .domain( [ 0, 17 ] )
-      .range( [ padding, width ] );
+      .range( [ config.margin, width ] );
     var yScale = d3.scale.linear()
       .domain( [ 0, 160 ] )
-      .range( [ height, padding ] );
+      .range( [ height, config.margin ] );
     area
       .x( function( d ) { return xScale( d.x ); } )
       .y0( function( d ) { return yScale( d.y0 ); } )
@@ -44,6 +48,8 @@ d3chart.streamChart = function() {
     removeElements( selection.exit() );
   }
 
+  d3chart.addConfigOptions( render, config );
+
   return render;
 
   function createElements( selection, chart ) {
@@ -51,29 +57,20 @@ d3chart.streamChart = function() {
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
     items.on( "click", function( datum, index ) { chart.notifySelect( index ); } );
-    createStreams( items );
-    createTexts( items );
-  }
-
-  function createStreams( selection ) {
-    selection.append( "svg:path" )
+    // createStreams
+    items.append( "svg:path" )
       .attr( "d", function( d ) { return area( d.values ); } )
       .style( "fill", function( d ) { return d.item.color || "#000"; } )
       .append( "svg:title" )
         .text( function( d ) { return d.item.text || ""; } );
-  }
-
-  function createTexts( selection ) {
-    selection.append( "svg:text" )
+    // createTexts
+    items.append( "svg:text" )
       .attr( "text", function( d ) { return d.item.text || ""; } );
   }
 
   function updateElements( selection ) {
-    updateStreams( selection.select( "path" ) );
-  }
-
-  function updateStreams( selection ) {
-    selection
+    // updateStreams
+    selection.select( "path" )
       .transition()
       .duration( 1000 )
       .attr( "d", function( d ) { return area( d.values ); } );

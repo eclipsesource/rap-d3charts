@@ -13,10 +13,8 @@ d3chart = {};
 
 d3chart.Chart = function( parent, renderer ) {
   this._data = [];
-  this._config = {};
   this._renderer = renderer;
   this._element = this.createElement( parent );
-  this._padding = 20;
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   rap.on( "render", function() {
     if( this._needsRender ) {
@@ -33,8 +31,12 @@ d3chart.Chart = function( parent, renderer ) {
 d3chart.Chart.prototype = {
 
   setConfig: function( config ) {
-    this._config = config;
-    this._scheduleUpdate( true );
+    for( var name in config ) {
+      if (typeof this._renderer[name] === "function") {
+        this._renderer[name]( config[name] );
+      }
+    }
+    this._scheduleUpdate();
   },
 
   setItems: function( data ) {
@@ -68,10 +70,11 @@ d3chart.Chart.prototype = {
   },
 
   _resize: function( clientArea ) {
-    this._width = clientArea[ 2 ];
-    this._height = clientArea[ 3 ];
-    this._svg.attr( "width", this._width ).attr( "height", this._height );
-    this._scheduleUpdate( true );
+    var width = clientArea[ 2 ];
+    var height = clientArea[ 3 ];
+    this._renderer.width( width ).height( height );
+    this._svg.attr( "width", width ).attr( "height", height );
+    this._scheduleUpdate();
   },
 
   _scheduleUpdate: function() {
@@ -87,15 +90,23 @@ d3chart.Chart.prototype = {
 
 };
 
-d3chart.extend = function( target ) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-    for (var name in source) {
-      target[name] = source[name];
-    }
+// UTILITIES
+
+d3chart.addConfigOptions = function( target, config ) {
+  for( var prop in config ) {
+    addOption( target, config, prop );
   }
-  return target;
 };
+
+function addOption( target, config, prop ) {
+  target[prop] = function( value ) {
+    if (!arguments.length) {
+      return config[prop];
+    }
+    config[prop] = value;
+    return target;
+  };
+}
 
 // TYPE HANDLER
 

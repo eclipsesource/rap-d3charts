@@ -14,17 +14,26 @@ d3chart.pieChart = function() {
   var arc = d3.svg.arc();
   var layout = d3.layout.pie().sort( null )
     .value( function( item ) { return item.value || 0; } );
+  var config = {
+    width: 0,
+    height: 0,
+    margin: 0,
+    startAngle: 0,
+    endAngle: 2 * Math.PI,
+    outerRadius: 1,
+    innerRadius: 0
+  };
 
   function render( chart, data ) {
-    var centerX = chart._width / 2;
-    var centerY = chart._height / 2;
-    var maxRadius = Math.min( centerX, centerY ) - chart._padding;
+    var centerX = config.width / 2;
+    var centerY = config.height / 2;
+    var maxRadius = Math.min( centerX, centerY ) - config.margin;
     layout
-      .startAngle( chart._config.startAngle )
-      .endAngle( chart._config.endAngle );
+      .startAngle( config.startAngle )
+      .endAngle( config.endAngle );
     arc
-      .outerRadius( chart._config.outerRadius * maxRadius )
-      .innerRadius( chart._config.innerRadius * maxRadius );
+      .outerRadius( config.outerRadius * maxRadius )
+      .innerRadius( config.innerRadius * maxRadius );
     var layer = chart.getLayer( "layer" );
     layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
     var selection = layer.selectAll( "g.segment" )
@@ -35,29 +44,24 @@ d3chart.pieChart = function() {
     removeSegments( selection.exit() );
   }
 
+  d3chart.addConfigOptions( render, config );
+
   return render;
 
   function createSegments( selection, chart ) {
     var newGroups = selection.append( "svg:g" )
       .attr( "class", "segment" )
       .attr( "opacity", 0.0 );
-    createPaths( newGroups );
-    createTexts( newGroups );
     newGroups.on( "click", function( datum, index ) { chart.notifySelection( index ); } );
-    show( newGroups );
-  }
-
-  function createPaths( selection ) {
-    selection.append( "svg:path" )
+    // createPaths
+    newGroups.append( "svg:path" )
       .attr( "fill", function( item ) { return item.data.color || "#000"; } )
       .attr( "d", arc )
       .each( function( datum ) {
         this._buffer = { startAngle: datum.startAngle, endAngle: datum.endAngle };
       } );
-  }
-
-  function createTexts( selection ) {
-    selection.append( "svg:text" )
+    // createTexts
+    newGroups.append( "svg:text" )
       .attr( "opacity", 1.0 )
       .style( "font-family", "sans-serif" )
       .style( "font-size", "11px" )
@@ -66,15 +70,12 @@ d3chart.pieChart = function() {
       .attr( "dy", ".35em" )
       .attr( "text-anchor", "middle" )
       .text( function( item ) { return item.data.text || ""; } );
+    show( newGroups );
   }
 
   function updateSegments( selection ) {
-    updatePaths( selection.select( "path" ) );
-    updateTexts( selection.select( "text" ) );
-  }
-
-  function updatePaths( selection ) {
-    selection
+    // updatePaths
+    selection.select( "path" )
       .transition()
       .duration( 1000 )
       .attr( "fill", function( item ) { return item.data.color || "#000"; } )
@@ -86,10 +87,8 @@ d3chart.pieChart = function() {
           return arc( interpolate( t ) );
         };
       } );
-  }
-
-  function updateTexts( selection ) {
-    selection
+    // updateTexts
+    selection.select( "text" )
       .transition()
       .duration( 500 )
       .attr( "opacity", 0.0 )
