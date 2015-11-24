@@ -13,7 +13,7 @@ d3chart = {};
 
 d3chart.Chart = function( parent, renderer ) {
   this._data = [];
-  this._renderer = renderer;
+  this._renderer = renderer( this );
   this._element = this.createElement( parent );
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   rap.on( "render", function() {
@@ -106,7 +106,7 @@ rap.registerTypeHandler( "d3chart.Chart", {
 
   factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
-    var renderer = d3chart[properties.renderer]();
+    var renderer = d3chart[properties.renderer];
     return new d3chart.Chart( parent, renderer );
   },
 

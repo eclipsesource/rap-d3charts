@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.pieChart = function() {
+d3chart.pieChart = function( widget ) {
 
   var arc = d3.svg.arc();
   var layout = d3.layout.pie().sort( null )
@@ -24,7 +24,7 @@ d3chart.pieChart = function() {
     innerRadius: 0
   };
 
-  function render( selection, chart ) {
+  function render( selection ) {
     var centerX = config.width / 2;
     var centerY = config.height / 2;
     var maxRadius = Math.min( centerX, centerY ) - config.margin;
@@ -43,7 +43,7 @@ d3chart.pieChart = function() {
     var segments = root.selectAll( "g.segment" ).data( layout( selection.datum() ) );
     show( selection );
     updateSegments( segments );
-    createSegments( segments.enter(), chart );
+    createSegments( segments.enter() );
     removeSegments( segments.exit() );
   }
 
@@ -51,11 +51,11 @@ d3chart.pieChart = function() {
 
   return render;
 
-  function createSegments( selection, chart ) {
+  function createSegments( selection ) {
     var newGroups = selection.append( "svg:g" )
       .attr( "class", "segment" )
       .attr( "opacity", 0.0 );
-    newGroups.on( "click", function( datum, index ) { chart.notifySelection( index ); } );
+    newGroups.on( "click", function( datum, index ) { widget.notifySelection( index ); } );
     // createPaths
     newGroups.append( "svg:path" )
       .attr( "fill", function( item ) { return item.data.color || "#000"; } )

@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.streamChart = function() {
+d3chart.streamChart = function( widget ) {
 
   var stack = d3.layout.stack()
     .offset( "wiggle" )
@@ -21,7 +21,7 @@ d3chart.streamChart = function() {
     margin: 0
   };
 
-  function render( selection, chart ) {
+  function render( selection ) {
     var width = config.width - config.margin * 2;
     var height = config.height - config.margin * 2;
     var xScale = d3.scale.linear()
@@ -43,7 +43,7 @@ d3chart.streamChart = function() {
       };
     } );
     var items = selection.selectAll( "g.item" ).data( stack( dataItems ) );
-    createElements( items.enter(), chart );
+    createElements( items.enter() );
     updateElements( items );
     removeElements( items.exit() );
   }
@@ -52,11 +52,11 @@ d3chart.streamChart = function() {
 
   return render;
 
-  function createElements( selection, chart ) {
+  function createElements( selection ) {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { chart.notifySelect( index ); } );
+    items.on( "click", function( datum, index ) { widget.notifySelect( index ); } );
     // createStreams
     items.append( "svg:path" )
       .attr( "d", function( d ) { return area( d.values ); } )

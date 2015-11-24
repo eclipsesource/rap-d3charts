@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.barChart = function() {
+d3chart.barChart = function( widget ) {
 
   var xScale = d3.scale.linear().domain( [ 0, 1 ] );
   var config = {
@@ -20,10 +20,10 @@ d3chart.barChart = function() {
     spacing: 2
   };
 
-  function render( selection, chart ) {
+  function render( selection ) {
     xScale.range( [ 0, config.width - config.margin * 2 ] );
     var items = selection.selectAll( "g.item" ).data( selection.datum() );
-    createElements( items.enter(), chart );
+    createElements( items.enter() );
     updateElements( items );
     removeElements( items.exit() );
   }
@@ -32,11 +32,11 @@ d3chart.barChart = function() {
 
   return render;
 
-  function createElements( selection, chart ) {
+  function createElements( selection ) {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { chart.notifySelection( index ); } );
+    items.on( "click", function( datum, index ) { widget.notifySelection( index ); } );
     // createBars
     items.append( "svg:rect" )
       .attr( "x", config.margin )
