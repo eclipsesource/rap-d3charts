@@ -17,6 +17,7 @@ public class StreamChart extends Chart {
 
   public StreamChart( Composite parent, int style ) {
     super( parent, style, "streamChart" );
+    requireJs( "d3chart/stream-chart.js", "chart/stream-chart.js" );
   }
 
 }

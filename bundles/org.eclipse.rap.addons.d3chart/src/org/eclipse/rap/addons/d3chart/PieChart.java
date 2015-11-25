@@ -22,6 +22,7 @@ public class PieChart extends Chart {
 
   public PieChart( Composite parent, int style ) {
     super( parent, style, "pieChart" );
+    requireJs( "d3chart/pie-chart.js", "chart/pie-chart.js" );
   }
 
   public float getStartAngle() {

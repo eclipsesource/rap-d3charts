@@ -21,6 +21,7 @@ public class BarChart extends Chart {
 
   public BarChart( Composite parent, int style ) {
     super( parent, style, "barChart" );
+    requireJs( "d3chart/bar-chart.js", "chart/bar-chart.js" );
   }
 
   public int getBarWidth() {

@@ -100,6 +100,21 @@ function addOption( target, config, prop ) {
   };
 }
 
+d3chart._loaded = {};
+
+d3chart.loadCss = function( url ) {
+  if (!(url in d3chart._loaded)) {
+    d3chart._loaded[url] = true;
+    var element = document.createElement( "link" );
+    element.id = "nv-d3-css";
+    element.rel = "stylesheet";
+    element.type = "text/css";
+    element.media = "screen";
+    element.href = url;
+    document.getElementsByTagName("head")[0].appendChild(element);
+  }
+};
+
 // TYPE HANDLER
 
 rap.registerTypeHandler( "d3chart.Chart", {

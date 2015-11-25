@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
-import java.util.Vector;
+import static org.eclipse.rap.rwt.RWT.getClient;
+import static org.eclipse.rap.rwt.RWT.getResourceManager;
 
-import org.eclipse.rap.rwt.RWT;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -23,61 +25,34 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 
 public class ChartResources {
 
-  private static final String[] CHART_JS_RESOURCES = new String[] {
-    "chart/chart.js",
-    "chart/bar-chart.js",
-    "chart/stream-chart.js",
-    "chart/pie-chart.js"
-  };
-  private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
-    @Override
-    public InputStream getResourceAsStream( String resourceName ) throws IOException {
-      return ChartResources.class.getClassLoader().getResourceAsStream( resourceName );
-    }
-  };
+  private Map<String, String> locations = new HashMap<>();
 
-  static void ensureJavaScriptResources() {
-    String d3Location = null;
-    String chartLocation = null;
-    ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
-    try {
-      // TODO register resources only once
-      d3Location = register( resourceManager,
-                             "lib/d3.min.js",
-                             RESOURCE_LOADER.getResourceAsStream( "resources/d3.min.js" ) );
-      chartLocation = register( resourceManager,
-                                "d3chart/d3chart.js",
-                                concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES ) );
-    } catch( IOException exception ) {
-      throw new RuntimeException( "Failed to register resource", exception );
-    }
-    JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
-    loader.require( d3Location );
-    loader.require( chartLocation + "?nocache=" + System.currentTimeMillis() );
+  void requireJs( String registerPath, String resourceName, ResourceLoader resourceLoader ) {
+    String location = register( registerPath, resourceName, resourceLoader );
+    JavaScriptLoader loader = getClient().getService( JavaScriptLoader.class );
+    loader.require( location );
   }
 
-  private static String register( ResourceManager resourceManager,
-                                  String registerPath,
-                                  InputStream inputStream ) throws IOException
+  void requireCss( String registerPath, String resourceName, ResourceLoader resourceLoader ) {
+    String location = register( registerPath, resourceName, resourceLoader );
+    JavaScriptExecutor executor = getClient().getService( JavaScriptExecutor.class );
+    executor.execute( "d3chart.loadCss('" + location + "');" );
+  }
+
+  private String register( String registerPath, String resourceName, ResourceLoader resourceLoader )
   {
-    String location;
-    try {
-      resourceManager.register( registerPath, inputStream );
-      location = resourceManager.getLocation( registerPath );
-    } finally {
-      inputStream.close();
+    ResourceManager resourceManager = getResourceManager();
+    String location = locations.get( registerPath );
+    if( location == null ) {
+      try( InputStream inputStream = resourceLoader.getResourceAsStream( resourceName ) ) {
+        resourceManager.register( registerPath, inputStream );
+      } catch( Exception exception ) {
+        throw new RuntimeException( "Failed to register resource " + registerPath, exception );
+      }
     }
+    location = resourceManager.getLocation( registerPath );
+    locations.put( registerPath, location );
     return location;
-  }
-
-  private static InputStream concatResources( ResourceLoader loader, String... resourceNames )
-    throws IOException
-  {
-    Vector<InputStream> inputStreams = new Vector<>( resourceNames.length );
-    for( String resourceName : resourceNames ) {
-      inputStreams.add( loader.getResourceAsStream( resourceName ) );
-    }
-    return new SequenceInputStream( inputStreams.elements() );
   }
 
 }
