@@ -32,9 +32,21 @@ public class NvChartSnippet extends AbstractEntryPoint {
     final NvPieChart pieChart = new NvPieChart( parent, SWT.NONE );
     pieChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     pieChart.setChartData( createPieData() );
+    pieChart.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        System.out.println( "Selected pie item #" + event.index );
+      }
+    } );
     final NvLineChart lineChart = new NvLineChart( parent, SWT.NONE );
     lineChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     lineChart.setChartData( createLineData() );
+    lineChart.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        System.out.println( "Selected line item #" + event.index + ", point #" + event.detail );
+      }
+    } );
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Change data" );
     button.addListener( SWT.Selection, new Listener() {

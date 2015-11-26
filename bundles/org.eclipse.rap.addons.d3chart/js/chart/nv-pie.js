@@ -10,10 +10,13 @@
  ******************************************************************************/
 /* global nv: false */
 
-d3chart['nv-pie'] = function() {
+d3chart['nv-pie'] = function(widget) {
   var chart = nv.models.pieChart()
-    .x( function( d ) { return d.label; } )
-    .y( function( d ) { return d.value; } )
+    .x(function(d) { return d.label; })
+    .y(function(d) { return d.value; })
     .showLabels( true );
+  chart.pie.dispatch.on("elementClick.rap", function(item) {
+    widget.notifySelection(item.index );
+  });
   return chart;
 };

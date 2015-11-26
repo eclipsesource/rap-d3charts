@@ -18,6 +18,7 @@ import java.io.InputStream;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -48,6 +49,10 @@ public abstract class Chart extends Canvas {
         if( "Selection".equals( eventName ) ) {
           Event event = new Event();
           event.index = properties.get( "index" ).asInt();
+          JsonValue detail = properties.get( "detail" );
+          if( detail != null ) {
+            event.detail = detail.asInt();
+          }
           notifyListeners( SWT.Selection, event );
         }
       }

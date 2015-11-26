@@ -10,12 +10,15 @@
  ******************************************************************************/
 /* global nv: false */
 
-d3chart['nv-line'] = function() {
+d3chart['nv-line'] = function(widget) {
   var chart = nv.models.lineChart();
   chart.xAxis
     .axisLabel("X-axis Label");
   chart.yAxis
     .axisLabel("Y-axis Label")
     .tickFormat(d3.format("d"));
+  chart.lines.dispatch.on("elementClick", function(item) {
+    widget.notifySelection(item.seriesIndex, item.pointIndex);
+  });
   return chart;
 };

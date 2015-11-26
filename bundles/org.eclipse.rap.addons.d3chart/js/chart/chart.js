@@ -56,9 +56,13 @@ d3chart.Chart.prototype = {
     return element;
   },
 
-  notifySelection: function( index ) {
+  notifySelection: function( index, detail ) {
     var remoteObject = rap.getRemoteObject( this );
-    remoteObject.notify( "Selection", { "index": index } );
+    var params = { "index": index };
+    if (arguments.length > 1) {
+      params.detail = detail;
+    }
+    remoteObject.notify( "Selection", params );
   },
 
   _resize: function( clientArea ) {
