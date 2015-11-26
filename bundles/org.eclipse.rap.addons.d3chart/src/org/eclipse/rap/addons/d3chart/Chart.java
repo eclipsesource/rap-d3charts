@@ -60,7 +60,7 @@ public abstract class Chart extends Canvas {
     } );
     resources = getUniqueInstance( ChartResources.class, RWT.getApplicationContext() );
     requireJs( "lib/d3.min.js", "resources/d3.min.js" );
-    requireJs( "d3chart/chart.js", "chart/chart.js" );
+    requireJs( "d3chart/chart.js", "d3chart/chart.js" );
   }
 
   public void setChartData( JsonArray data ) {

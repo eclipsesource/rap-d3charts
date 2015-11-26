@@ -10,7 +10,7 @@
  ******************************************************************************/
 /* global nv: false */
 
-d3chart['nv-line'] = function(widget) {
+d3chart.register("nv-line", function(widget) {
   var chart = nv.models.lineChart();
   chart.yAxis.tickFormat(d3.format("d"));
   chart.yAxis.tickFormat(d3.format("d"));
@@ -26,4 +26,4 @@ d3chart['nv-line'] = function(widget) {
     return chart.yAxis.tickFormat(d3.format(value));
   };
   return chart;
-};
+});

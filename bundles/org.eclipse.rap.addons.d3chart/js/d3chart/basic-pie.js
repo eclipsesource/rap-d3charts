@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.pieChart = function( widget ) {
+d3chart.register("basic-pie", function( widget ) {
 
   var arc = d3.svg.arc();
   var layout = d3.layout.pie().sort( null )
@@ -118,4 +118,4 @@ d3chart.pieChart = function( widget ) {
     selection.transition().duration( 1000 ).attr( "opacity", 1.0 );
   }
 
-};
+});

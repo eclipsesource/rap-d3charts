@@ -19,7 +19,7 @@ public class NvLineChart extends Chart {
     super( parent, style, "nv-line" );
     requireJs( "lib/nv.d3.js", "resources/nv.d3.js" );
     requireCss( "lib/nv.d3.css", "resources/nv.d3.css" );
-    requireJs( "d3chart/nv-line.js", "chart/nv-line.js" );
+    requireJs( "d3chart/nv-line.js", "d3chart/nv-line.js" );
   }
 
   // TODO implement getters

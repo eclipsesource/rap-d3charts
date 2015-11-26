@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.barChart = function( widget ) {
+d3chart.register("basic-bar", function( widget ) {
 
   var xScale = d3.scale.linear().domain( [ 0, 1 ] );
   var config = {
@@ -84,4 +84,4 @@ d3chart.barChart = function( widget ) {
     return config.margin + index * ( config.barWidth + config.spacing );
   }
 
-};
+});

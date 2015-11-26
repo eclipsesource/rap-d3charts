@@ -61,7 +61,7 @@ public class BarChart_Test {
 
   @Test
   public void testCreate_setsRenderer() {
-    verify( remoteObject ).set( "renderer", "barChart" );
+    verify( remoteObject ).set( "renderer", "basic-bar" );
   }
 
   @Test

@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.streamChart = function( widget ) {
+d3chart.register("basic-stream", function( widget ) {
 
   var stack = d3.layout.stack()
     .offset( "wiggle" )
@@ -56,7 +56,7 @@ d3chart.streamChart = function( widget ) {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { widget.notifySelect( index ); } );
+    items.on( "click", function( datum, index ) { widget.notifySelection( index ); } );
     // createStreams
     items.append( "svg:path" )
       .attr( "d", function( d ) { return area( d.values ); } )
@@ -84,4 +84,4 @@ d3chart.streamChart = function( widget ) {
       .remove();
   }
 
-};
+});

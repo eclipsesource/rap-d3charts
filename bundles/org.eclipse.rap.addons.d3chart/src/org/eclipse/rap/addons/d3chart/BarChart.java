@@ -19,8 +19,8 @@ public class BarChart extends Chart {
   private int spacing = 2;
 
   public BarChart( Composite parent, int style ) {
-    super( parent, style, "barChart" );
-    requireJs( "d3chart/bar-chart.js", "chart/bar-chart.js" );
+    super( parent, style, "basic-bar" );
+    requireJs( "d3chart/basic-bar.js", "d3chart/basic-bar.js" );
   }
 
   public int getBarWidth() {

@@ -10,7 +10,7 @@
  ******************************************************************************/
 /* global nv: false */
 
-d3chart['nv-pie'] = function(widget) {
+d3chart.register("nv-pie", function(widget) {
   var chart = nv.models.pieChart()
     .x(function(d) { return d.label; })
     .y(function(d) { return d.value; })
@@ -19,4 +19,4 @@ d3chart['nv-pie'] = function(widget) {
     widget.notifySelection(item.index );
   });
   return chart;
-};
+});

@@ -58,7 +58,7 @@ public class PieChart_Test {
 
   @Test
   public void testCreate_setsRenderer() {
-    verify( remoteObject ).set( "renderer", "pieChart" );
+    verify( remoteObject ).set( "renderer", "basic-pie" );
   }
 
   @Test

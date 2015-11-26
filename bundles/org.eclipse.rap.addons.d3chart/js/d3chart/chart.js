@@ -92,6 +92,15 @@ d3chart.Chart.prototype = {
 
 // UTILITIES
 
+d3chart._renderers = {};
+
+d3chart.register = function( name, generator ) {
+  if (name in d3chart._renderers) {
+    throw new Error("Chart type already registered: " + name);
+  }
+  d3chart._renderers[name] = generator;
+};
+
 d3chart.addConfigOptions = function( target, config ) {
   for( var prop in config ) {
     addOption( target, config, prop );
@@ -129,7 +138,7 @@ rap.registerTypeHandler( "d3chart.Chart", {
 
   factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
-    var renderer = d3chart[properties.renderer];
+    var renderer = d3chart._renderers[properties.renderer];
     return new d3chart.Chart( parent, renderer );
   },
 

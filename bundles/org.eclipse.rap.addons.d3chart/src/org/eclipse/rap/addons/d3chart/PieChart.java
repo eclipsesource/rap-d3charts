@@ -20,8 +20,8 @@ public class PieChart extends Chart {
   private float innerRadius = 0;
 
   public PieChart( Composite parent, int style ) {
-    super( parent, style, "pieChart" );
-    requireJs( "d3chart/pie-chart.js", "chart/pie-chart.js" );
+    super( parent, style, "basic-pie" );
+    requireJs( "d3chart/basic-pie.js", "d3chart/basic-pie.js" );
   }
 
   public float getStartAngle() {

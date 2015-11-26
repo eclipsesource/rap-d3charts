@@ -21,7 +21,7 @@ public class NvPieChart extends Chart {
     super( parent, style, "nv-pie" );
     requireJs( "lib/nv.d3.js", "resources/nv.d3.js" );
     requireCss( "lib/nv.d3.css", "resources/nv.d3.css" );
-    requireJs( "d3chart/nv-pie.js", "chart/nv-pie.js" );
+    requireJs( "d3chart/nv-pie.js", "d3chart/nv-pie.js" );
   }
 
   public void setShowLabels( boolean show ) {

@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 public class StreamChart extends Chart {
 
   public StreamChart( Composite parent, int style ) {
-    super( parent, style, "streamChart" );
-    requireJs( "d3chart/stream-chart.js", "chart/stream-chart.js" );
+    super( parent, style, "basic-stream" );
+    requireJs( "d3chart/basic-stream.js", "d3chart/basic-stream.js" );
   }
 
 }
