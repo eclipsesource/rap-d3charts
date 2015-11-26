@@ -8,7 +8,6 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-/* global nv: false */
 
 d3chart.register("nv-pie", function(widget) {
   var chart = nv.models.pieChart()

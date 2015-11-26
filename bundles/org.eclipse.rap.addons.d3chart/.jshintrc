@@ -18,6 +18,7 @@
   "globals": {
     "rap": false,
     "d3chart": true,
-    "d3": false
+    "d3": false,
+    "nv": false
   }
 }
