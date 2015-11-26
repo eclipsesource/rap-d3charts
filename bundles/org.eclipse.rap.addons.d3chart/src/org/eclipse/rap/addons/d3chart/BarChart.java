@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
-import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -33,7 +32,7 @@ public class BarChart extends Chart {
     checkWidget();
     if( width != barWidth ) {
       barWidth = width;
-      updateConfig();
+      setOption( "barWidth", width );
     }
   }
 
@@ -46,14 +45,8 @@ public class BarChart extends Chart {
     checkWidget();
     if( width != spacing ) {
       spacing = width;
-      updateConfig();
+      setOption( "spacing", width );
     }
-  }
-
-  private void updateConfig() {
-    setConfig( new JsonObject()
-      .add( "barWidth", barWidth )
-      .add( "spacing", spacing ) );
   }
 
 }

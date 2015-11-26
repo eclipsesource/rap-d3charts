@@ -22,4 +22,26 @@ public class NvLineChart extends Chart {
     requireJs( "d3chart/nv-line.js", "chart/nv-line.js" );
   }
 
+  // TODO implement getters
+
+  public void setXAxisLabel( String label ) {
+    checkWidget();
+    setOption( "xAxisLabel", label );
+  }
+
+  public void setYAxisLabel( String label ) {
+    checkWidget();
+    setOption( "yAxisLabel", label );
+  }
+
+  public void setXAxisFormat( String format ) {
+    checkWidget();
+    setOption( "xAxisFormat", format );
+  }
+
+  public void setYAxisFormat( String format ) {
+    checkWidget();
+    setOption( "yAxisFormat", format );
+  }
+
 }

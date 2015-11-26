@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
+import static org.eclipse.rap.json.JsonValue.valueOf;
 import static org.eclipse.rap.rwt.SingletonUtil.getUniqueInstance;
 import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
 
@@ -67,8 +68,24 @@ public abstract class Chart extends Canvas {
     remoteObject.set( "items", data );
   }
 
-  protected void setConfig( JsonObject config ) {
-    remoteObject.set( "config", config );
+  protected void setOption( String name, int value ) {
+    setOption( name, valueOf( value ) );
+  }
+
+  protected void setOption( String name, double value ) {
+    setOption( name, valueOf( value ) );
+  }
+
+  protected void setOption( String name, boolean value ) {
+    setOption( name, valueOf( value ) );
+  }
+
+  protected void setOption( String name, String value ) {
+    setOption( name, valueOf( value ) );
+  }
+
+  protected void setOption( String name, JsonValue value ) {
+    remoteObject.call( "setOptions", new JsonObject().add( name, value ) );
   }
 
   protected void requireJs( String registerPath, String resourceName ) {

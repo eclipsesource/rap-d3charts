@@ -16,6 +16,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.application.AbstractEntryPoint;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -26,36 +27,59 @@ import org.eclipse.swt.widgets.Listener;
 
 public class NvChartSnippet extends AbstractEntryPoint {
 
+  private NvPieChart pieChart;
+  private NvLineChart lineChart;
+
   @Override
   protected void createContents( Composite parent ) {
     parent.setLayout( new GridLayout() );
-    final NvPieChart pieChart = new NvPieChart( parent, SWT.NONE );
+    createPieChart( parent );
+    createLineChart( parent );
+    createUpdateButton( parent );
+    update();
+  }
+
+  private void createPieChart( Composite parent ) {
+    pieChart = new NvPieChart( parent, SWT.BORDER );
     pieChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
-    pieChart.setChartData( createPieData() );
+    pieChart.setShowLabels( true );
     pieChart.addListener( SWT.Selection, new Listener() {
       @Override
       public void handleEvent( Event event ) {
         System.out.println( "Selected pie item #" + event.index );
       }
     } );
-    final NvLineChart lineChart = new NvLineChart( parent, SWT.NONE );
+  }
+
+  private void createLineChart( Composite parent ) {
+    lineChart = new NvLineChart( parent, SWT.NONE );
     lineChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
-    lineChart.setChartData( createLineData() );
+    lineChart.setBackground( new Color( parent.getDisplay(), 250, 250, 250 ) );
+    lineChart.setXAxisLabel( "Time" );
+    lineChart.setYAxisLabel( "Radiation" );
+    lineChart.setYAxisFormat( "d" );
     lineChart.addListener( SWT.Selection, new Listener() {
       @Override
       public void handleEvent( Event event ) {
         System.out.println( "Selected line item #" + event.index + ", point #" + event.detail );
       }
     } );
+  }
+
+  private void createUpdateButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Change data" );
     button.addListener( SWT.Selection, new Listener() {
       @Override
       public void handleEvent( Event event ) {
-        pieChart.setChartData( createPieData() );
-        lineChart.setChartData( createLineData() );
+        update();
       }
     } );
+  }
+
+  private void update() {
+    pieChart.setChartData( createPieData() );
+    lineChart.setChartData( createLineData() );
   }
 
   private static JsonArray createPieData() {

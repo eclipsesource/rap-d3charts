@@ -15,11 +15,26 @@ import org.eclipse.swt.widgets.Composite;
 
 public class NvPieChart extends Chart {
 
+  private boolean showLabels = true;
+
   public NvPieChart( Composite parent, int style ) {
     super( parent, style, "nv-pie" );
     requireJs( "lib/nv.d3.js", "resources/nv.d3.js" );
     requireCss( "lib/nv.d3.css", "resources/nv.d3.css" );
     requireJs( "d3chart/nv-pie.js", "chart/nv-pie.js" );
+  }
+
+  public void setShowLabels( boolean show ) {
+    checkWidget();
+    if( show != showLabels ) {
+      showLabels = show;
+      setOption( "showLabels", show );
+    }
+  }
+
+  public boolean getShowLabels() {
+    checkWidget();
+    return showLabels;
   }
 
 }

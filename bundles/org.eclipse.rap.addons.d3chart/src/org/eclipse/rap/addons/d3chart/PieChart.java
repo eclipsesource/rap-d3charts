@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
-import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -34,7 +33,7 @@ public class PieChart extends Chart {
     checkWidget();
     if( angle != startAngle ) {
       startAngle = angle;
-      updateConfig();
+      setOption( "startAngle", startAngle * Math.PI * 2 );
     }
   }
 
@@ -47,7 +46,7 @@ public class PieChart extends Chart {
     checkWidget();
     if( angle != endAngle ) {
       endAngle = angle;
-      updateConfig();
+      setOption( "endAngle", endAngle * Math.PI * 2 );
     }
   }
 
@@ -60,16 +59,8 @@ public class PieChart extends Chart {
     checkWidget();
     if( radius != innerRadius ) {
       innerRadius = radius;
-      updateConfig();
+      setOption( "innerRadius", innerRadius );
     }
-  }
-
-  private void updateConfig() {
-    setConfig( new JsonObject()
-      .add( "startAngle", startAngle * Math.PI * 2 )
-      .add( "endAngle", endAngle * Math.PI * 2 )
-      .add( "innerRadius", innerRadius )
-      .add( "outerRadius", 1 ) );
   }
 
 }

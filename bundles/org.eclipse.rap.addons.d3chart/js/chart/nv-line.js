@@ -12,13 +12,18 @@
 
 d3chart['nv-line'] = function(widget) {
   var chart = nv.models.lineChart();
-  chart.xAxis
-    .axisLabel("X-axis Label");
-  chart.yAxis
-    .axisLabel("Y-axis Label")
-    .tickFormat(d3.format("d"));
+  chart.yAxis.tickFormat(d3.format("d"));
+  chart.yAxis.tickFormat(d3.format("d"));
   chart.lines.dispatch.on("elementClick", function(item) {
     widget.notifySelection(item.seriesIndex, item.pointIndex);
   });
+  chart.xAxisLabel = chart.xAxis.axisLabel.bind(chart);
+  chart.yAxisLabel = chart.yAxis.axisLabel.bind(chart);
+  chart.xAxisFormat = function(value) {
+    return chart.xAxis.tickFormat(d3.format(value));
+  };
+  chart.yAxisFormat = function(value) {
+    return chart.yAxis.tickFormat(d3.format(value));
+  };
   return chart;
 };

@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -93,13 +92,11 @@ public class BarChart_Test {
 
   @Test
   public void testSetBarWidth_isRendered() {
-    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
     reset( remoteObject );
 
     chart.setBarWidth( 42 );
 
-    verify( remoteObject ).set( eq( "config" ), captor.capture() );
-    assertEquals( 42, captor.getValue().get( "barWidth" ).asInt() );
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "barWidth", 42 ) );
   }
 
   @Test
@@ -137,13 +134,11 @@ public class BarChart_Test {
 
   @Test
   public void testSetSpacing_isRendered() {
-    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
     reset( remoteObject );
 
     chart.setSpacing( 23 );
 
-    verify( remoteObject ).set( eq( "config" ), captor.capture() );
-    assertEquals( 23, captor.getValue().get( "spacing" ).asInt() );
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "spacing", 23 ) );
   }
 
   @Test

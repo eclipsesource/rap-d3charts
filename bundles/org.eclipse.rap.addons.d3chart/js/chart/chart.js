@@ -31,13 +31,17 @@ d3chart.Chart = function( parent, renderer ) {
 
 d3chart.Chart.prototype = {
 
-  setConfig: function( config ) {
-    for( var name in config ) {
-      if (typeof this._renderer[name] === "function") {
-        this._renderer[name]( config[name] );
-      }
+  setOptions: function( options ) {
+    for( var name in options ) {
+      this.setOption( name, options[name] );
     }
-    this._scheduleUpdate();
+  },
+
+  setOption: function( name, value ) {
+    if (typeof this._renderer[name] === "function") {
+      this._renderer[name]( value );
+      this._scheduleUpdate();
+    }
   },
 
   setItems: function( data ) {
@@ -131,7 +135,9 @@ rap.registerTypeHandler( "d3chart.Chart", {
 
   destructor: "destroy",
 
-  properties: [ "config", "items" ],
+  properties: [ "items" ],
+
+  methods : [ "setOptions" ],
 
   events: [ "Selection" ]
 

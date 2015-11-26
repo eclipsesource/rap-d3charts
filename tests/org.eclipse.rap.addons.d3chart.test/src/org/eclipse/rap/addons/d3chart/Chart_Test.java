@@ -67,7 +67,6 @@ public class Chart_Test {
     new Chart( shell, SWT.BORDER, "foo" ) {};
 
     assertTrue( RWT.getResourceManager().isRegistered( "lib/d3.min.js" ) );
-    assertTrue( RWT.getResourceManager().isRegistered( "d3chart/d3chart.js" ) );
   }
 
   @Test
@@ -113,13 +112,21 @@ public class Chart_Test {
   }
 
   @Test
-  public void testSetConfig_isRendered() {
+  public void testSetOption_int_isRendered() {
     Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
-    JsonObject config = new JsonObject().add( "foo", 23 ).add( "bar", 42 );
 
-    chart.setConfig( config );
+    chart.setOption( "foo", 23 );
 
-    verify( remoteObject ).set( "config", config );
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "foo", 23 ) );
+  }
+
+  @Test
+  public void testSetOption_string_isRendered() {
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
+
+    chart.setOption( "foo", "bar" );
+
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "foo", "bar" ) );
   }
 
   @Test

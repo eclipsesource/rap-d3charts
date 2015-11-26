@@ -14,14 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
-import org.mockito.ArgumentCaptor;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.eclipse.rap.addons.d3chart.PieChart;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -32,6 +24,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class PieChart_Test {
@@ -78,13 +75,11 @@ public class PieChart_Test {
 
   @Test
   public void testInnerRadius_isRendered() {
-    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
     reset( remoteObject );
 
     chart.setInnerRadius( 0.5f );
 
-    verify( remoteObject ).set( eq( "config" ), captor.capture() );
-    assertEquals( 0.5, captor.getValue().get( "innerRadius" ).asDouble(), 0 );
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "innerRadius", 0.5 ) );
   }
 
   @Test
@@ -101,13 +96,11 @@ public class PieChart_Test {
 
   @Test
   public void testStartAngle_isRendered() {
-    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
     reset( remoteObject );
 
     chart.setStartAngle( -0.5f );
 
-    verify( remoteObject ).set( eq( "config" ), captor.capture() );
-    assertEquals( -Math.PI, captor.getValue().get( "startAngle" ).asDouble(), 0 );
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "startAngle", -Math.PI ) );
   }
 
   @Test
@@ -124,13 +117,11 @@ public class PieChart_Test {
 
   @Test
   public void testEndAngle_isRendered() {
-    ArgumentCaptor<JsonObject> captor = ArgumentCaptor.forClass( JsonObject.class );
     reset( remoteObject );
 
     chart.setEndAngle( 0.5f );
 
-    verify( remoteObject ).set( eq( "config" ), captor.capture() );
-    assertEquals( Math.PI, captor.getValue().get( "endAngle" ).asDouble(), 0 );
+    verify( remoteObject ).call( "setOptions", new JsonObject().add( "endAngle", Math.PI ) );
   }
 
   private Connection fakeConnection( RemoteObject remoteObject ) {
