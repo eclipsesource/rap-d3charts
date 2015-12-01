@@ -5,5 +5,6 @@ Bundle-SymbolicName: org.eclipse.rap.addons.d3chart
 Bundle-Version: 0.0.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)"
-Export-Package: org.eclipse.rap.addons.d3chart;version="0.0.2"
+Export-Package: org.eclipse.rap.addons.d3chart;version="0.0.2",
+ org.eclipse.rap.addons.d3chart.basic;version="0.0.2"
 Bundle-Vendor: EclipseSource

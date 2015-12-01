@@ -8,8 +8,9 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.addons.d3chart;
+package org.eclipse.rap.addons.d3chart.basic;
 
+import org.eclipse.rap.addons.d3chart.Chart;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -20,7 +21,7 @@ public class BarChart extends Chart {
 
   public BarChart( Composite parent, int style ) {
     super( parent, style, "basic-bar" );
-    requireJs( "d3chart/basic-bar.js", "d3chart/basic-bar.js" );
+    requireJs( "d3chart/basic-bar.js", "d3chart/basic/bar.js" );
   }
 
   public int getBarWidth() {

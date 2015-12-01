@@ -8,8 +8,9 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.addons.d3chart;
+package org.eclipse.rap.addons.d3chart.basic;
 
+import org.eclipse.rap.addons.d3chart.Chart;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -19,7 +20,7 @@ public class NvLineChart extends Chart {
     super( parent, style, "nv-line" );
     requireJs( "lib/nv.d3.js", "resources/nv.d3.js" );
     requireCss( "lib/nv.d3.css", "resources/nv.d3.css" );
-    requireJs( "d3chart/nv-line.js", "d3chart/nv-line.js" );
+    requireJs( "d3chart/nv-line.js", "d3chart/basic/nv-line.js" );
   }
 
   // TODO implement getters

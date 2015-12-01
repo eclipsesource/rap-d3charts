@@ -8,12 +8,13 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.addons.d3chart;
+package org.eclipse.rap.addons.d3chart.basic;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
+import org.eclipse.rap.addons.d3chart.basic.PieChart;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;

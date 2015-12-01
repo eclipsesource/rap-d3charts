@@ -12,7 +12,7 @@ package org.eclipse.rap.addons.d3chart.demo;
 
 import static org.eclipse.rap.addons.d3chart.demo.internal.data.Colors.toCss;
 
-import org.eclipse.rap.addons.d3chart.PieChart;
+import org.eclipse.rap.addons.d3chart.basic.PieChart;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;

@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo;
 
-import org.eclipse.rap.addons.d3chart.NvLineChart;
-import org.eclipse.rap.addons.d3chart.NvPieChart;
+import org.eclipse.rap.addons.d3chart.basic.NvLineChart;
+import org.eclipse.rap.addons.d3chart.basic.NvPieChart;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.application.AbstractEntryPoint;

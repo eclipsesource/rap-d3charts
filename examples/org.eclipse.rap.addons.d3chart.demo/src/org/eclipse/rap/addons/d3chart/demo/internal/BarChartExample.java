@@ -14,8 +14,8 @@ import static org.eclipse.rap.addons.d3chart.demo.internal.data.Colors.toCss;
 
 import java.text.DecimalFormat;
 
-import org.eclipse.rap.addons.d3chart.BarChart;
-import org.eclipse.rap.addons.d3chart.PieChart;
+import org.eclipse.rap.addons.d3chart.basic.BarChart;
+import org.eclipse.rap.addons.d3chart.basic.PieChart;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.Colors;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;

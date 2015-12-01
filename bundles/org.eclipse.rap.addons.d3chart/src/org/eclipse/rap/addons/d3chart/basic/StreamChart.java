@@ -8,8 +8,9 @@
  * Contributors:
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.addons.d3chart;
+package org.eclipse.rap.addons.d3chart.basic;
 
+import org.eclipse.rap.addons.d3chart.Chart;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -17,7 +18,7 @@ public class StreamChart extends Chart {
 
   public StreamChart( Composite parent, int style ) {
     super( parent, style, "basic-stream" );
-    requireJs( "d3chart/basic-stream.js", "d3chart/basic-stream.js" );
+    requireJs( "d3chart/basic-stream.js", "d3chart/basic/stream.js" );
   }
 
 }
