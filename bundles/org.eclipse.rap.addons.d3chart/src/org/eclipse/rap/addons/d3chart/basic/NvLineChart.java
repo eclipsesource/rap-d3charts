@@ -27,12 +27,12 @@ public class NvLineChart extends Chart {
 
   public void setXAxisLabel( String label ) {
     checkWidget();
-    setOption( "xAxisLabel", label );
+    setOption( "xAxis.axisLabel", label );
   }
 
   public void setYAxisLabel( String label ) {
     checkWidget();
-    setOption( "yAxisLabel", label );
+    setOption( "yAxis.axisLabel", label );
   }
 
   public void setXAxisFormat( String format ) {

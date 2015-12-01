@@ -4,6 +4,8 @@ describe( "Chart", function() {
   var parent;
   var chart;
   var captor;
+  var renderer;
+  var generator;
 
   beforeEach( function() {
     rap.setup();
@@ -26,22 +28,27 @@ describe( "Chart", function() {
       },
       getClientArea: function() { return [ 20, 30, 200, 300 ]; }
     };
+    renderer = jasmine.createSpy();
+    renderer.width = jasmine.createSpy().and.returnValue(renderer);
+    renderer.height = jasmine.createSpy().and.returnValue(renderer);
+    generator = function() { return renderer; };
     captor = [];
   } );
 
   it( "creates a DOM element and appends it to its parent", function() {
     spyOn( parent, "append" );
 
-    chart = new d3chart.Chart( parent );
+    chart = new d3chart.Chart( parent, generator );
 
     expect( parent.append ).toHaveBeenCalled();
-    expect( parent.append.mostRecentCall.args[0] ).toBeDefined();
+    expect( parent.append.calls.mostRecent().args[0] ).toEqual(jasmine.any(Element));
+    expect( parent.append.calls.mostRecent().args[0].tagName ).toBe("DIV");
   } );
 
   describe( "svg element", function() {
 
     beforeEach( function() {
-      chart = new d3chart.Chart( parent );
+      chart = new d3chart.Chart( parent, generator );
     } );
 
     it( "is created", function() {
@@ -65,27 +72,26 @@ describe( "Chart", function() {
 
   } );
 
-  describe( "getLayer", function() {
+  describe( "setOption", function() {
 
     beforeEach( function() {
-      chart = new d3chart.Chart( parent );
+      chart = new d3chart.Chart( parent, generator );
     } );
 
-    it( "returns a d3 selection", function() {
-      var layer = chart.getLayer( "foo" );
+    it( "calls method on renderer", function() {
+      renderer.foo = jasmine.createSpy();
 
-      expect( typeof layer.data ).toBe( "function" );
-      expect( layer.length ).toBe( 1 );
-      expect( layer.node().tagName ).toBe( "g" );
-      expect( layer.classed( "foo" ) ).toBe( true );
-      expect( layer.node().parentNode ).toBe( chart._svg.node() );
+      chart.setOption( "foo", 23 );
+
+      expect( renderer.foo ).toHaveBeenCalledWith( 23 );
     } );
 
-    it( "returns selection with the same nodes for one name", function() {
-      var layer1 = chart.getLayer( "foo" );
-      var layer2 = chart.getLayer( "foo" );
+    it( "calls nested method on renderer", function() {
+      renderer.foo = { bar: jasmine.createSpy() };
 
-      expect( layer1.node() ).toBe( layer2.node() );
+      chart.setOption( "foo.bar", 23 );
+
+      expect( renderer.foo.bar ).toHaveBeenCalledWith( 23 );
     } );
 
   } );

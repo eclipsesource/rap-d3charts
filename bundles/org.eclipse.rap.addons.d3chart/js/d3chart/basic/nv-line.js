@@ -16,8 +16,6 @@ d3chart.register("nv-line", function(widget) {
   chart.lines.dispatch.on("elementClick", function(item) {
     widget.notifySelection(item.seriesIndex, item.pointIndex);
   });
-  chart.xAxisLabel = chart.xAxis.axisLabel.bind(chart);
-  chart.yAxisLabel = chart.yAxis.axisLabel.bind(chart);
   chart.xAxisFormat = function(value) {
     return chart.xAxis.tickFormat(d3.format(value));
   };

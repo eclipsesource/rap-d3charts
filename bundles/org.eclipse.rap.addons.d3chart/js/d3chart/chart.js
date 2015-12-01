@@ -37,9 +37,16 @@ d3chart.Chart.prototype = {
     }
   },
 
-  setOption: function( name, value ) {
-    if (typeof this._renderer[name] === "function") {
-      this._renderer[name]( value );
+  setOption: function(name, value) {
+    var obj = this._renderer;
+    name.split(".").forEach(function(part) {
+      if (!(part in obj)) {
+        return;
+      }
+      obj = obj[part];
+    });
+    if (typeof obj === "function") {
+      obj(value);
       this._scheduleUpdate();
     }
   },
