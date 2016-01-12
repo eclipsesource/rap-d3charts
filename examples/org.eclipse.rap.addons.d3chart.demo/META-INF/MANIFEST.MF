@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: D3 Chart ExamplesDemo Page
 Bundle-SymbolicName: org.eclipse.rap.addons.d3chart.demo
-Bundle-Version: 1.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 1.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.servlet.http;version="2.5.0",
  org.eclipse.rap.addons.d3chart;version="0.0.2",
  org.eclipse.rap.addons.d3chart.basic;version="0.0.2",
