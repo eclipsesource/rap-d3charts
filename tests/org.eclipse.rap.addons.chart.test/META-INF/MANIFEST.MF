@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Unit Tests for D3 Charts
-Bundle-SymbolicName: org.eclipse.rap.addons.d3chart.test
+Bundle-SymbolicName: org.eclipse.rap.addons.chart.test
 Bundle-Version: 0.0.3.qualifier
 Bundle-Vendor: EclipseSource
-Fragment-Host: org.eclipse.rap.addons.d3chart;bundle-version="0.0.2"
+Fragment-Host: org.eclipse.rap.addons.chart;bundle-version="0.0.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.rap.rwt.testfixture;bundle-version="2.0.0"
