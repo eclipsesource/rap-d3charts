@@ -26,7 +26,7 @@ public class CssLoader {
     if( !loadedUrls.contains( location ) ) {
       loadedUrls.add( location );
       JavaScriptExecutor executor = getClient().getService( JavaScriptExecutor.class );
-      executor.execute( "d3chart.loadCss('" + location + "');" );
+      executor.execute( "rwt.chart.loadCss('" + location + "');" );
     }
   }
 

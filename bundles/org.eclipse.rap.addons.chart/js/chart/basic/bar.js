@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.register("basic-bar", function( widget ) {
+rwt.chart.register("basic-bar", function( widget ) {
 
   var xScale = d3.scale.linear().domain( [ 0, 1 ] );
   var config = {
@@ -28,7 +28,7 @@ d3chart.register("basic-bar", function( widget ) {
     removeElements( items.exit() );
   }
 
-  d3chart.addConfigOptions( render, config );
+  rwt.chart.addConfigOptions( render, config );
 
   return render;
 

@@ -17,7 +17,7 @@
   "browser": true,
   "globals": {
     "rap": true,
-    "d3chart": true,
+    "rwt": true,
     "d3": false,
     "beforeEach": false,
     "afterEach": false,

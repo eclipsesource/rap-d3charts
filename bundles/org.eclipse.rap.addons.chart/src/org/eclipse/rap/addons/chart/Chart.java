@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Listener;
 
 public abstract class Chart extends Canvas {
 
-  private static final String REMOTE_TYPE = "d3chart.Chart";
+  private static final String REMOTE_TYPE = "rwt.chart.Chart";
   private static final String D3_JS_URL = "https://d3js.org/d3.v3.min.js";
 
   private Resources resources;

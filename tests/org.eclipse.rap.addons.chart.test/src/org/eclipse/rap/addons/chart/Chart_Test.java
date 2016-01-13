@@ -81,14 +81,14 @@ public class Chart_Test {
   public void testCreate_registeresJavaScriptResource() {
     new Chart( shell, SWT.BORDER, "foo" ) {};
 
-    assertTrue( RWT.getResourceManager().isRegistered( "d3chart/chart.js" ) );
+    assertTrue( RWT.getResourceManager().isRegistered( "chart/chart.js" ) );
   }
 
   @Test
   public void testCreate_createsRemoteObject() {
     new Chart( shell, SWT.BORDER, "renderer type" ) {};
 
-    verify( connection ).createRemoteObject( eq( "d3chart.Chart" ) );
+    verify( connection ).createRemoteObject( eq( "rwt.chart.Chart" ) );
   }
 
   @Test

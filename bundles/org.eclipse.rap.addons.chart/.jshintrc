@@ -17,7 +17,7 @@
   "browser": true,
   "globals": {
     "rap": false,
-    "d3chart": true,
+    "rwt": false,
     "d3": false,
     "nv": false
   }

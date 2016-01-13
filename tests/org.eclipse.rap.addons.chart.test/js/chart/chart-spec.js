@@ -38,7 +38,7 @@ describe( "Chart", function() {
   it( "creates a DOM element and appends it to its parent", function() {
     spyOn( parent, "append" );
 
-    chart = new d3chart.Chart( parent, generator );
+    chart = new rwt.chart.Chart( parent, generator );
 
     expect( parent.append ).toHaveBeenCalled();
     expect( parent.append.calls.mostRecent().args[0] ).toEqual(jasmine.any(Element));
@@ -48,7 +48,7 @@ describe( "Chart", function() {
   describe( "svg element", function() {
 
     beforeEach( function() {
-      chart = new d3chart.Chart( parent, generator );
+      chart = new rwt.chart.Chart( parent, generator );
     } );
 
     it( "is created", function() {
@@ -75,7 +75,7 @@ describe( "Chart", function() {
   describe( "setOption", function() {
 
     beforeEach( function() {
-      chart = new d3chart.Chart( parent, generator );
+      chart = new rwt.chart.Chart( parent, generator );
     } );
 
     it( "calls method on renderer", function() {
