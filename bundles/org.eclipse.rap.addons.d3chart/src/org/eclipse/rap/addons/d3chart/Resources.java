@@ -10,26 +10,19 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
-import static org.eclipse.rap.rwt.RWT.getClient;
 import static org.eclipse.rap.rwt.RWT.getResourceManager;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ResourceManager;
 
 
-public class ChartResources {
+public class Resources {
 
-  private Map<String, String> locations = new HashMap<>();
-
-  void requireCss( String location ) {
-    JavaScriptExecutor executor = getClient().getService( JavaScriptExecutor.class );
-    executor.execute( "d3chart.loadCss('" + location + "');" );
-  }
+  private final Map<String, String> locations = new HashMap<>();
 
   String register( String resourceName, String registerPath, ResourceLoader resourceLoader ) {
     ResourceManager resourceManager = getResourceManager();

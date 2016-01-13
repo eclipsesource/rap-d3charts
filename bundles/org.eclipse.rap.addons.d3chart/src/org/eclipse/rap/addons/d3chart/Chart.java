@@ -38,7 +38,8 @@ public abstract class Chart extends Canvas {
   private static final String REMOTE_TYPE = "d3chart.Chart";
   private static final String D3_JS_URL = "https://d3js.org/d3.v3.min.js";
 
-  private ChartResources resources;
+  private Resources resources;
+  private CssLoader cssLoader;
 
   protected final RemoteObject remoteObject;
 
@@ -61,8 +62,9 @@ public abstract class Chart extends Canvas {
         }
       }
     } );
-    resources = getUniqueInstance( ChartResources.class, RWT.getApplicationContext() );
-    requireJs( D3_JS_URL );
+    resources = getUniqueInstance( Resources.class, RWT.getApplicationContext() );
+    cssLoader = getUniqueInstance( CssLoader.class, RWT.getUISession() );
+    RWT.getClient().getService( JavaScriptLoader.class ).require( D3_JS_URL );
     requireJs( registerResource( "d3chart/chart.js" ) );
   }
 
@@ -96,7 +98,7 @@ public abstract class Chart extends Canvas {
   }
 
   protected void requireCss( String url ) {
-    resources.requireCss( url );
+    cssLoader.requireCss( url );
   }
 
   protected String registerResource( String resourceName ) {

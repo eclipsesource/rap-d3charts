@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,19 +124,13 @@ function addOption( target, config, prop ) {
   };
 }
 
-d3chart._loaded = {};
-
 d3chart.loadCss = function( url ) {
-  if (!(url in d3chart._loaded)) {
-    d3chart._loaded[url] = true;
-    var element = document.createElement( "link" );
-    element.id = "nv-d3-css";
-    element.rel = "stylesheet";
-    element.type = "text/css";
-    element.media = "screen";
-    element.href = url;
-    document.getElementsByTagName("head")[0].appendChild(element);
-  }
+  var element = document.createElement( "link" );
+  element.rel = "stylesheet";
+  element.type = "text/css";
+  element.media = "screen";
+  element.href = url;
+  document.getElementsByTagName( "head" )[0].appendChild( element );
 };
 
 // TYPE HANDLER
