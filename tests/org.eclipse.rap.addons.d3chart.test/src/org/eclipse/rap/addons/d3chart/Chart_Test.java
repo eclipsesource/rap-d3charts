@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import static org.mockito.Matchers.eq;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.TestContext;
@@ -63,10 +65,22 @@ public class Chart_Test {
   }
 
   @Test
+  public void testCreate_requiresD3JS() {
+    JavaScriptLoader loader = mock( JavaScriptLoader.class );
+    Client client = mock( Client.class );
+    when( client.getService( JavaScriptLoader.class ) ).thenReturn( loader );
+    context.replaceClient( client );
+
+    new Chart( shell, SWT.BORDER, "foo" ) {};
+
+    verify( loader ).require( "https://d3js.org/d3.v3.min.js" );
+  }
+
+  @Test
   public void testCreate_registeresJavaScriptResource() {
     new Chart( shell, SWT.BORDER, "foo" ) {};
 
-    assertTrue( RWT.getResourceManager().isRegistered( "lib/d3.min.js" ) );
+    assertTrue( RWT.getResourceManager().isRegistered( "d3chart/chart.js" ) );
   }
 
   @Test

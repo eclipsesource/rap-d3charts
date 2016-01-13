@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.rap.addons.d3chart;
 
 import static org.eclipse.rap.json.JsonValue.valueOf;
+import static org.eclipse.rap.rwt.RWT.getClient;
 import static org.eclipse.rap.rwt.SingletonUtil.getUniqueInstance;
 import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
 
@@ -21,6 +22,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -34,6 +36,7 @@ import org.eclipse.swt.widgets.Listener;
 public abstract class Chart extends Canvas {
 
   private static final String REMOTE_TYPE = "d3chart.Chart";
+  private static final String D3_JS_URL = "https://d3js.org/d3.v3.min.js";
 
   private ChartResources resources;
 
@@ -59,8 +62,8 @@ public abstract class Chart extends Canvas {
       }
     } );
     resources = getUniqueInstance( ChartResources.class, RWT.getApplicationContext() );
-    requireJs( "lib/d3.min.js", "resources/d3.min.js" );
-    requireJs( "d3chart/chart.js", "d3chart/chart.js" );
+    requireJs( D3_JS_URL );
+    requireJs( registerResource( "d3chart/chart.js" ) );
   }
 
   public void setChartData( JsonArray data ) {
@@ -88,12 +91,16 @@ public abstract class Chart extends Canvas {
     remoteObject.call( "setOptions", new JsonObject().add( name, value ) );
   }
 
-  protected void requireJs( String registerPath, String resourceName ) {
-    resources.requireJs( registerPath, resourceName, getResourceLoader() );
+  protected void requireJs( String url ) {
+    getClient().getService( JavaScriptLoader.class ).require( url );
   }
 
-  protected void requireCss( String registerPath, String resourceName ) {
-    resources.requireCss( registerPath, resourceName, getResourceLoader() );
+  protected void requireCss( String url ) {
+    resources.requireCss( url );
+  }
+
+  protected String registerResource( String resourceName ) {
+    return resources.register( resourceName, resourceName, getResourceLoader() );
   }
 
   private ResourceLoader getResourceLoader() {

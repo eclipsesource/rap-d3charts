@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 EclipseSource and others.
+ * Copyright (c) 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,21 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.basic;
 
+import org.eclipse.rap.addons.d3chart.Chart;
 import org.eclipse.swt.widgets.Composite;
 
 
-public class NvPieChart extends NvChart {
+public abstract class NvChart extends Chart {
 
-  private boolean showLabels = true;
+  private static final String NVD3_CSS_URL
+    = "https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css";
+  private static final String NVD3_JS_URL
+    = "https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.js";
 
-  public NvPieChart( Composite parent, int style ) {
-    super( parent, style, "nv-pie" );
-    requireJs( registerResource( "d3chart/basic/nv-pie.js" ) );
-  }
-
-  public void setShowLabels( boolean show ) {
-    checkWidget();
-    if( show != showLabels ) {
-      showLabels = show;
-      setOption( "showLabels", show );
-    }
-  }
-
-  public boolean getShowLabels() {
-    checkWidget();
-    return showLabels;
+  public NvChart( Composite parent, int style, String renderer ) {
+    super( parent, style, renderer );
+    requireJs( NVD3_JS_URL );
+    requireCss( NVD3_CSS_URL );
   }
 
 }

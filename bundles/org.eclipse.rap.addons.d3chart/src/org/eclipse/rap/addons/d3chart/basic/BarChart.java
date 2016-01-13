@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ public class BarChart extends Chart {
 
   public BarChart( Composite parent, int style ) {
     super( parent, style, "basic-bar" );
-    requireJs( "d3chart/basic-bar.js", "d3chart/basic/bar.js" );
+    requireJs( registerResource( "d3chart/basic/bar.js" ) );
   }
 
   public int getBarWidth() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ public class PieChart extends Chart {
 
   public PieChart( Composite parent, int style ) {
     super( parent, style, "basic-pie" );
-    requireJs( "d3chart/basic-pie.js", "d3chart/basic/pie.js" );
+    requireJs( registerResource( "d3chart/basic/pie.js" ) );
   }
 
   public float getStartAngle() {
